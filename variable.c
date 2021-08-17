@@ -33,6 +33,9 @@ int main(void)
   int ia[] = { 1, 2};
   printf("ia[%d] = %d, ia[%d] = %d\n", 0, ia[0], 1, ia[1]);
 
+  /* 変数のアドレス */
+  printf("&ch = %p\n", &ch);
+
   return 0;
 
 }
