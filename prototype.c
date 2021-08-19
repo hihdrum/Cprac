@@ -1,4 +1,4 @@
-int f(void);
+int f(void); /* プロトタイプ宣言 */
 
 int main(void)
 {
