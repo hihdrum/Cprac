@@ -739,6 +739,43 @@ stdio.hの内容を含めるという意味になります。含めていたの�
 
   処理3;
 
+以下は整数を受け取り偶数かどうかを判定するプログラムの例である。
+実際に記述し実行してみよ。
+
+#+NAME: iseven01.c
+#+BEGIN_SRC C
+#include <stdio.h>
+
+int isEven(int x)
+{
+  int isEven = 0; /* 0:奇数, 1:偶数 */
+  if(x % 2 == 0)
+  {
+    isEven = 1;
+  }
+
+  return isEven;
+}
+
+int main(void)
+{
+  int x = 5;
+  printf("isEven(%d) = %d\n", x, isEven(x));
+
+  x = 6;
+  printf("isEven(%d) = %d\n", x, isEven(x));
+
+  return 0;
+}
+
+#+END_SRC
+
+#+RESULT: iseven01.c
+$ gcc -Wall iseven01.c
+$ ./a.out
+isEven(5) = 0
+isEven(6) = 1
+
 ** if〜else
 
   処理1;
@@ -755,6 +792,44 @@ stdio.hの内容を含めるという意味になります。含めていたの�
   }
 
   処理4;
+
+以下は整数を受け取り偶数かどうかを判定するプログラムの例である。
+実際に記述し実行してみよ。
+
+#+NAME: iseven02.c
+#+BEGIN_SRC C
+#include <stdio.h>
+
+/* 0:奇数, 1:偶数 */
+int isEven(int x)
+{
+  if(x % 2 == 0)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+
+int main(void)
+{
+  int x = 5;
+  printf("isEven(%d) = %d\n", x, isEven(x));
+
+  x = 6;
+  printf("isEven(%d) = %d\n", x, isEven(x));
+
+  return 0;
+}
+#+END_SRC
+
+#+RESULT: iseven02.c
+$ gcc -Wall iseven02.c
+$ ./a.out
+isEven(5) = 0
+isEven(6) = 1
 
 ** if〜else if〜 else〜else
 
@@ -779,6 +854,58 @@ stdio.hの内容を含めるという意味になります。含めていたの�
 
   処理5;
 
+以下はテストの点数を受け取り評価A〜Eを返すプログラムの例である。
+実際に記述し実行してみよ。
+
+#+NAME: evalTest.c
+#+BEGIN_SRC C
+#include <stdio.h>
+
+char evalTest(int x)
+{
+  if(75 <= x)
+  {
+    return 'A';
+  }
+  else if(50 <= x)
+  {
+    return 'B';
+  }
+  else if(25 <= x)
+  {
+    return 'C';
+  }
+  else
+  {
+    return 'D';
+  }
+}
+
+int main(void)
+{
+  int x = 100;
+  printf("evalTest(%d) = %c\n", x, evalTest(x));
+
+  x = 74;
+  printf("evalTest(%d) = %c\n", x, evalTest(x));
+
+  x = 49;
+  printf("evalTest(%d) = %c\n", x, evalTest(x));
+
+  x = 24;
+  printf("evalTest(%d) = %c\n", x, evalTest(x));
+
+  return 0;
+}
+#+END_SRC
+
+#+RESULT: evelTest.c
+$ ./a.out
+evalTest(100) = A
+evalTest(74) = B
+evalTest(49) = C
+evalTest(24) = D
+
 ** if〜else if
 最後のelseはなくても特に文句はいわれません。
 実は、最近知りました。
@@ -798,6 +925,57 @@ stdio.hの内容を含めるという意味になります。含めていたの�
 
   処理4;
 
+以下はテストの点数を受け取り評価A〜Eを返すプログラムの例である。
+実際に記述し実行してみよ。
+
+#+NAME: evalTest01.c
+#+BEGIN_SRC C
+include <stdio.h>
+
+char evalTest(int x)
+{
+  if(75 <= x)
+  {
+    return 'A';
+  }
+  else if(50 <= x)
+  {
+    return 'B';
+  }
+  else if(25 <= x)
+  {
+    return 'C';
+  }
+
+  return 'D';
+}
+
+int main(void)
+{
+  int x = 100;
+  printf("evalTest(%d) = %c\n", x, evalTest(x));
+
+  x = 74;
+  printf("evalTest(%d) = %c\n", x, evalTest(x));
+
+  x = 49;
+  printf("evalTest(%d) = %c\n", x, evalTest(x));
+
+  x = 24;
+  printf("evalTest(%d) = %c\n", x, evalTest(x));
+
+  return 0;
+}
+#+END_SRC
+
+#+RESULT: evalTest01.c
+$ gcc -Wall evalTest01.c
+$ ./a.out
+evalTest(100) = A
+evalTest(74) = B
+evalTest(49) = C
+evalTest(24) = D
+
 ** switch
 
    switch(x)
@@ -815,19 +993,166 @@ stdio.hの内容を含めるという意味になります。含めていたの�
        その他処理;
    }
 
+以下は評価A〜Dを数値4〜1に変換するプログラムである。
+実際に記述し実行してみよ。
+
+#+NAME: ab2num.c
+#+BEGIN_SRC C
+#include <stdio.h>
+
+int ab2num(char e)
+{
+  int num;
+  switch(e)
+  {
+    case 'A':
+      num = 4;
+      break;
+
+    case 'B':
+      num = 3;
+      break;
+
+    case 'C':
+      num = 2;
+      break;
+
+    default:
+      num = 1;
+  }
+
+  return num;
+}
+
+int main(void)
+{
+  char e = 'A';
+  printf("ab2num(%c) = %d\n", e, ab2num(e));
+
+  e = 'B';
+  printf("ab2num(%c) = %d\n", e, ab2num(e));
+
+  e = 'C';
+  printf("ab2num(%c) = %d\n", e, ab2num(e));
+
+  e = 'D';
+  printf("ab2num(%c) = %d\n", e, ab2num(e));
+
+  return 0;
+}
+#+END_SRC
+
+#+RESULT: ab2num.c
+$ gcc -Wall ab2num.c
+$ ./a.out
+ab2num(A) = 4
+ab2num(B) = 3
+ab2num(C) = 2
+ab2num(D) = 1
+
+switch文はbreakを記述しない場合、上から下に処理が行われていく。
+
+以下は、評価A〜Dから合否を判定するプログラムである。
+実際に記述し実行してみよ。
+
+#+NAME: isOk.c
+#+BEGIN_SRC C
+#include <stdio.h>
+
+int isOk(char e)
+{
+  int isOk;
+  switch(e)
+  {
+    case 'A':
+    case 'B':
+      isOk = 1;
+      break;
+
+    case 'C':
+    default:
+      isOk = 0;
+  }
+
+  return isOk;
+}
+
+int main(void)
+{
+  char e = 'A';
+  printf("isOk(%c) = %d\n", e, isOk(e));
+
+  e = 'B';
+  printf("isOk(%c) = %d\n", e, isOk(e));
+
+  e = 'C';
+  printf("isOk(%c) = %d\n", e, isOk(e));
+
+  e = 'D';
+  printf("isOk(%c) = %d\n", e, isOk(e));
+
+  return 0;
+}
+#+END_SRC
+
+#+RESULT: isOk.c
+$ gcc -Wall isOk.c
+makoto@insp-7380:~/gitHub/Cprac$ ./a.out
+isOk(A) = 1
+isOk(B) = 1
+isOk(C) = 0
+isOk(D) = 0
+
 ** 仕様
 
 「6.8.4 Selection statements」
 
 ** 関数型スタイルと再帰
 変数への代入を行わないプログラミングに関数型プログラミンがあります。
-C言語は関数型のプログラミング言語ではありませんが、関数型プログラミングのスタイルで
-コードを記述することはできます。
+C言語は関数型のプログラミング言語ではありませんが、関数型プログラミングのスタイルでコードを記述することはできます。
+関数型のコードの利点は数学的な記述に近いかたちでコードを記述できることです。
 
-関数型言語は通常、末尾再帰の形で記述した再帰処理がgotoになるそうです。
+関数型言語では、末尾再帰の形で記述した再帰処理がgotoになるそうです。
 そのため、再帰呼び出しによってスタックを使い果たすことはありません。
 しかし、C言語の場合は再帰呼出しの際にスタックを使用しますので、
 再帰呼び出しが深くなるとプログラムが異常終了します。
+
+以下は再帰を用いて階乗を計算するプログラムである。
+
+ frac_rec(0) = 1                  (n == 0)
+ frac_rec(n) = n * frac_rec(n-1)  (n != 0)
+
+実際に記述し実行してみよ。
+
+#+NAME: fact_rec.c
+#+BEGIN_SRC C
+#include <stdio.h>
+
+int fact_rec(const int x)
+{
+  if(0 == x)
+  {
+    return 1;
+  }
+  else
+  {
+    return x * fact_rec(x - 1);
+  }
+}
+
+int main(void)
+{
+  int x = 5;
+  printf("fact(%d) = %d\n", x, fact_rec(x));
+
+  return 0;
+}
+#+END_SRC
+
+#+RESULT: fact_rec.c
+$ gcc -Wall fact_rec.c
+makoto@insp-7380:~/gitHub/Cprac$ ./a.out
+fact(5) = 120
 
 ** 問題
 
@@ -856,11 +1181,6 @@ C言語は関数型のプログラミング言語ではありませんが、関�
                      9 + sum(8)
                          8 + sum(7)
       :
-
-   5. 1からnまでの整数の積を求める関数を
-
-      prod(n) = n * prod(n-1)  (n != 1)
-      prod(1) = 1              (n == 1)
 
 * 繰り返し
 
