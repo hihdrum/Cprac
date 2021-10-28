@@ -1599,7 +1599,7 @@ int main(void)
 
 #+result: pointer03.c
 $ gcc -Wall -g pointer03.c 
-makoto@insp-7380:~/gitHub/Cprac$ ./a.out 
+$ ./a.out 
 x = aa
 x = ff
 
@@ -1641,7 +1641,7 @@ struct タグ名
 * デバッガ(GDB)
 * 総合
 ** #includeって何してるの?
-
+** ライブラリを作成する
 ** 簡易cat
 ** CDプレーヤーのモデル
 
