@@ -49,7 +49,7 @@ int warning_v3(int x)
   else
   {
     /* 通常状態 */
-    state =  warning(x);
+    state = warning(x);
     return state;
   }
 }
