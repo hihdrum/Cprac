@@ -1641,7 +1641,34 @@ struct タグ名
 * デバッガ(GDB)
 * 総合
 ** 関数単体試験
+*** モジュールの分離
+1. 「条件分岐」問題2.2を解いてみよ。
+    ファイル名はsuiryou.cとする。
+
+2. suiryou_testディレクトリを作成しsuiryou.cをそこに移動せよ。
+3. suiryou.cについて、警告用関数の別モジュールに分離せよ。また、ヘッダファイルを用意せよ。
+4. これまで通り動作することを確認せよ。
+
+*** Makefileの作成
+1. 以下のMakefileを用意せよ。
+
+$ cat Makefile
+all: suiryou
+
+suiryou : main.c suiryou.c suiryou.h
+	gcc -Wall main.c suiryou.c -o suiryou
+
+clean :
+	rm -rf a.out *.o suiryou
+
+2. 1のMakefileはsuiryou実行ファイルを作成するための依存関係が一つにまとまっている。
+   そのため、main.c, suiryou.c, suiryou.hのどれが変更されてもmain.c, suiryou.cの
+   コンパイルとリンクが行われる。
+   依存関係の記述を修正してみよ。
+
+
 *** CppUTest
+
 ** #includeって何してるの?
 ** ライブラリを作成する
 ** 簡易cat
