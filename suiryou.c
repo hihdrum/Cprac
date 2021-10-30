@@ -3,6 +3,7 @@
 #define DEF_WAR      (95)
 #define DEF_WAR_DOWN (90)
 
+/* 問題2.1 */
 int warning(int x)
 {
   if(DEF_WAR <= x)
