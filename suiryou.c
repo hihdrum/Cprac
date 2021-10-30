@@ -55,6 +55,36 @@ int warning_v3(int x)
   }
 }
 
+/* warning_v3まで作成後以下の様にするのがよいのではないかと思った。*/
+int warning_normal(int x)
+{
+  return warning(x);
+}
+
+int warning_warning(int x)
+{
+  if(DEF_WAR_DOWN > x)
+  {
+    return 0;
+  }
+
+  return 1;
+}
+
+int warning_v4(int x)
+{
+  static int state = 0;
+  if(0 == state)
+  {
+    state = warning_normal(x);
+  }
+  else
+  {
+    state = warning_warning(x);
+  }
+
+  return state;
+}
 
 int main(void)
 {
@@ -112,6 +142,23 @@ int main(void)
 
   x = 89;
   printf("warning_v3(%d) = %d\n", x, warning_v3(x));
+
+  printf("----------------------------------------\n");
+  x = 90;
+  printf("warning_v4(%d) = %d\n", x, warning_v4(x));
+
+  x = 95;
+  printf("warning_v4(%d) = %d\n", x, warning_v4(x));
+
+  x = 94;
+  printf("warning_v4(%d) = %d\n", x, warning_v4(x));
+
+  x = 90;
+  printf("warning_v4(%d) = %d\n", x, warning_v4(x));
+
+  x = 89;
+  printf("warning_v4(%d) = %d\n", x, warning_v4(x));
+
 
   return 0;
 }
