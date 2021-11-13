@@ -21,12 +21,12 @@ struct list *list_create(int x)
   return list;
 }
 
-struct list *list_add(int x)
+void list_add(struct list *entry)
 {
   if(NULL == g_head)
   {
-    g_head = list_create(x);
-    return g_head;
+    g_head = entry;
+    return;
   }
 
   struct list* list = g_head;
@@ -36,8 +36,8 @@ struct list *list_add(int x)
     list = list->next;
   }
 
-  list->next = list_create(x);
-  return g_head;
+  list->next = entry;
+  return;
 }
 
 void list_print(void)
@@ -57,11 +57,15 @@ void list_print(void)
 
 int main(void)
 {
-  list_add(1);
-  list_add(2);
-  list_add(3);
-  list_add(4);
-  list_add(5);
+  struct list *entry;
+  entry = list_create(1);
+  list_add(entry);
+
+  entry = list_create(2);
+  list_add(entry);
+
+  entry = list_create(3);
+  list_add(entry);
 
   list_print();
   putchar('\n');
