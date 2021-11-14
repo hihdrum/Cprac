@@ -1631,6 +1631,45 @@ funcNG内でx=0xffを実行していますが、xの結果は変化せずに0xaa
 ただ、変更したい場合もあるのでその様な場合は呼び出し元のメモリアドレス情報を
 渡すわけです。
 
+** scanfの使用例
+
+#+name : sampel_scanf01.c
+#+begin_src C
+#include <stdio.h>
+
+int main(void)
+{
+  printf("整数値を入力して下さい : ");
+
+  int in;
+  scanf("%d", &in);
+
+  printf("入力された整数値は、%dでした。\n", in);
+
+  return 0;
+}
+#+end_src
+
+#+name : sample_scanf02.c
+#+begin_src C
+#include <stdio.h>
+
+int main(void)
+{
+  printf("整数値を入力して下さい : ");
+
+  int in;
+  int *pin = &in;
+
+  scanf("%d", pin);
+
+  printf("入力された整数値は、%dでした。\n", in);
+  printf("入力された整数値は、%dでした。\n", *pin);
+
+  return 0;
+}
+#+end_src
+
 *** 問題
 1. pointer03.cを修正し各種変数のメモリアドレス情報を出力させてみよ。
 2. char型要素数4の配列を用意し、各値のアドレスと値を表示させてみよ。
