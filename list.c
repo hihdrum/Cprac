@@ -21,6 +21,11 @@ struct list *list_create(int x)
   return list;
 }
 
+void list_free(struct list *entry)
+{
+  free(entry);
+}
+
 void list_add(struct list *head, struct list *entry)
 {
   struct list *list = head;
@@ -32,6 +37,24 @@ void list_add(struct list *head, struct list *entry)
 
   list->next = entry;
   return;
+}
+
+void list_del(struct list *head, struct list *entry)
+{
+  struct list *list = head;
+  struct list *prev = head;
+
+  while(list)
+  {
+    if(list == entry)
+    {
+      prev->next = list->next;
+      list_free(list);
+    }
+
+    prev = list;
+    list = list->next;
+  }
 }
 
 void list_print(const struct list *head)
@@ -51,12 +74,16 @@ int main(void)
   entry = list_create(1);
   list_add(g_head, entry);
 
-  entry = list_create(2);
-  list_add(g_head, entry);
+  struct list *ent = list_create(2);
+  list_add(g_head, ent);
 
   entry = list_create(3);
   list_add(g_head, entry);
 
+  list_print(g_head);
+  putchar('\n');
+
+  list_del(g_head, ent);
   list_print(g_head);
   putchar('\n');
 
