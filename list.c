@@ -21,16 +21,16 @@ struct list *list_create(int x)
   return list;
 }
 
-void list_add(struct list **head, struct list *entry)
+void list_add(struct list *head, struct list *entry)
 {
-  struct list **list = head;
+  struct list *list = head;
 
-  while((*list)->next != NULL)
+  while(list->next != NULL)
   {
-    list = &(*list)->next;
+    list = list->next;
   }
 
-  (*list)->next = entry;
+  list->next = entry;
   return;
 }
 
@@ -51,13 +51,13 @@ int main(void)
 
   struct list *entry;
   entry = list_create(1);
-  list_add(&g_head, entry);
+  list_add(g_head, entry);
 
   entry = list_create(2);
-  list_add(&g_head, entry);
+  list_add(g_head, entry);
 
   entry = list_create(3);
-  list_add(&g_head, entry);
+  list_add(g_head, entry);
 
   list_print(g_head);
   putchar('\n');
