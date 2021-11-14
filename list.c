@@ -25,7 +25,7 @@ void list_add(struct list *head, struct list *entry)
 {
   struct list *list = head;
 
-  while(list->next != NULL)
+  while(list->next)
   {
     list = list->next;
   }
