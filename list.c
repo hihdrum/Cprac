@@ -7,8 +7,7 @@ struct list
   int v;
 };
 
-struct list head_dmy = { NULL, 0 };
-struct list *g_head = &head_dmy;
+struct list *g_head = NULL;
 
 struct list *list_create(int x)
 {
@@ -22,9 +21,9 @@ struct list *list_create(int x)
   return list;
 }
 
-void list_add(struct list *entry)
+void list_add(struct list **head, struct list *entry)
 {
-  struct list **list = &g_head;
+  struct list **list = head;
 
   while((*list)->next != NULL)
   {
@@ -35,9 +34,9 @@ void list_add(struct list *entry)
   return;
 }
 
-void list_print(void)
+void list_print(struct list *head)
 {
-  struct list *list = g_head->next;
+  struct list *list = head;
 
   while(NULL != list)
   {
@@ -48,17 +47,19 @@ void list_print(void)
 
 int main(void)
 {
+  g_head = list_create(0);
+
   struct list *entry;
   entry = list_create(1);
-  list_add(entry);
+  list_add(&g_head, entry);
 
   entry = list_create(2);
-  list_add(entry);
+  list_add(&g_head, entry);
 
   entry = list_create(3);
-  list_add(entry);
+  list_add(&g_head, entry);
 
-  list_print();
+  list_print(g_head);
   putchar('\n');
 
   return 0;
