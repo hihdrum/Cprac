@@ -23,20 +23,19 @@ struct list *list_create(int x)
 
 void list_add(struct list *entry)
 {
-  if(NULL == g_head)
+  struct list **list = &g_head;
+  if(NULL == *list)
   {
-    g_head = entry;
+    *list = entry;
     return;
   }
 
-  struct list* list = g_head;
-
-  while(list->next != NULL)
+  while((*list)->next != NULL)
   {
-    list = list->next;
+    list = &(*list)->next;
   }
 
-  list->next = entry;
+  (*list)->next = entry;
   return;
 }
 
