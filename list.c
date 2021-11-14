@@ -7,7 +7,8 @@ struct list
   int v;
 };
 
-struct list *g_head = NULL;
+struct list head_dmy = { NULL, 0 };
+struct list *g_head = &head_dmy;
 
 struct list *list_create(int x)
 {
@@ -24,11 +25,6 @@ struct list *list_create(int x)
 void list_add(struct list *entry)
 {
   struct list **list = &g_head;
-  if(NULL == *list)
-  {
-    *list = entry;
-    return;
-  }
 
   while((*list)->next != NULL)
   {
@@ -41,7 +37,7 @@ void list_add(struct list *entry)
 
 void list_print(void)
 {
-  struct list *list = g_head;
+  struct list *list = g_head->next;
   if(NULL != list)
   {
     printf("%d", list->v);
