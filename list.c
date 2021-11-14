@@ -34,14 +34,12 @@ void list_add(struct list *head, struct list *entry)
   return;
 }
 
-void list_print(struct list *head)
+void list_print(const struct list *head)
 {
-  struct list *list = head;
-
-  while(list)
+  while(head)
   {
-    printf("%d ", list->v);
-    list = list->next;
+    printf("%d ", head->v);
+    head = head->next;
   }
 }
 
