@@ -38,7 +38,7 @@ void list_print(struct list *head)
 {
   struct list *list = head;
 
-  while(NULL != list)
+  while(list)
   {
     printf("%d ", list->v);
     list = list->next;
