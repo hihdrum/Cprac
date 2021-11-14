@@ -38,15 +38,11 @@ void list_add(struct list *entry)
 void list_print(void)
 {
   struct list *list = g_head->next;
-  if(NULL != list)
-  {
-    printf("%d", list->v);
 
-    while(list->next != NULL)
-    {
-      list = list->next;
-      printf(" %d", list->v);
-    }
+  while(NULL != list)
+  {
+    printf("%d ", list->v);
+    list = list->next;
   }
 }
 
