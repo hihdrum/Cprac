@@ -1302,7 +1302,7 @@ fact(5) = 120
        15の倍数お場合 : FizzBuzz
         それ以外の場合 : 数値そのまま
 
-   2. main関数を以下に置き換えてプログラムを実行してみよ。
+   2. main関数を以下に置き換えてプログラムを実行してみよ。(fizzBuzzMain.c)
 
 #+begin_src C
 int main(int argc, char *argv[])
