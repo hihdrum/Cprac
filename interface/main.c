@@ -78,8 +78,7 @@ struct data_processor
 
 void proc(struct data_processor *p, void *d)
 {
-  struct proc *proc;
-  for(proc = p->proc; proc->proc; proc++)
+  for(struct proc *proc = p->proc; proc->proc; proc++)
   {
     if(proc->proc)
       (*(proc->proc))(d);
@@ -88,8 +87,7 @@ void proc(struct data_processor *p, void *d)
 
 void explain(struct data_processor *p)
 {
-  struct proc *proc;
-  for(proc = p->proc; proc->explain; proc++)
+  for(struct proc *proc = p->proc; proc->explain; proc++)
   {
     if(proc->explain)
       (*(proc->explain))();
