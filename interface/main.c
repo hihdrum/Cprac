@@ -64,14 +64,14 @@ void print_data2_02_exp(void)
 
 /* データ出力を一般化したい。*/
 /**************************/
-struct proc
+struct processor
 {
   int num;
   void (*proc[10])(void *);
   void (*explain[10])(void);
 };
 
-void proc(struct proc *p, void *d)
+void proc(struct processor *p, void *d)
 {
   void (**func)(void *);
   for(func = p->proc; *func; func++)
@@ -80,7 +80,7 @@ void proc(struct proc *p, void *d)
   }
 }
 
-void explain(struct proc *p)
+void explain(struct processor *p)
 {
   void (**func)(void);
   for(func = p->explain; *func; func++)
@@ -89,15 +89,15 @@ void explain(struct proc *p)
   }
 }
 
-void add_proc(struct proc *p, void *proc, void *explain)
+void add_proc(struct processor *p, void *proc, void *explain)
 {
   p->proc[p->num] = proc;
   p->explain[p->num] = explain;
   p->num++;
 }
 
-struct proc d1proc;
-struct proc d2proc;
+struct processor d1proc;
+struct processor d2proc;
 
 int main(void)
 {
