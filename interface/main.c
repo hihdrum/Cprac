@@ -85,6 +85,7 @@ void proc(struct data_processor *p, void *d)
   }
 }
 
+/* TODO : 説明はNULLとなっている関数を許容したい。*/
 void explain(struct data_processor *p)
 {
   for(struct proc *proc = p->proc; proc->explain; proc++)
