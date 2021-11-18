@@ -94,10 +94,10 @@ void explain(struct data_processor *p)
   }
 }
 
-void add_proc(struct data_processor *p, struct proc *proc)
+void add_proc(struct data_processor *p, void *proc, void *explain)
 {
-  p->proc[p->num].proc = proc->proc;
-  p->proc[p->num].explain = proc->explain;
+  p->proc[p->num].proc = proc;
+  p->proc[p->num].explain = explain;
   p->num++;
 }
 
@@ -107,22 +107,13 @@ struct data_processor d2proc;
 int main(void)
 {
   struct data1 d1 = { 1, 2 };
-  struct proc p = { (void *)print_data1_01, print_data1_01_exp };
-  add_proc(&d1proc, &p);
-
-  p.proc = (void *)print_data1_02;
-  p.explain = print_data1_02_exp;
-  add_proc(&d1proc, &p);
+  add_proc(&d1proc, print_data1_01, print_data1_01_exp);
+  add_proc(&d1proc, print_data1_02, print_data1_02_exp);
   proc(&d1proc, &d1);
 
   struct data2 d2 = { "DATA", 3.25, 5.5 };
-  p.proc = (void *)print_data2_01;
-  p.explain = print_data2_01_exp;
-  add_proc(&d2proc, &p);
-
-  p.proc = (void *)print_data2_02;
-  p.explain = print_data2_02_exp;
-  add_proc(&d2proc, &p);
+  add_proc(&d2proc, print_data2_01, print_data2_01_exp);
+  add_proc(&d2proc, print_data2_02, print_data2_02_exp);
   proc(&d2proc, &d2);
 
   explain(&d1proc);
