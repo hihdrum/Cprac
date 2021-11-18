@@ -64,35 +64,42 @@ void print_data2_02_exp(void)
 
 /* データ出力を一般化したい。*/
 /**************************/
+struct proc
+{
+  void (*proc)(void *);
+  void (*explain)(void);
+};
+
 struct processor
 {
   int num;
-  void (*proc[10])(void *);
-  void (*explain[10])(void);
+  struct proc proc[10];
 };
 
 void proc(struct processor *p, void *d)
 {
-  void (**func)(void *);
-  for(func = p->proc; *func; func++)
+  struct proc *proc;
+  for(proc = p->proc; proc->proc; proc++)
   {
-    (*func)(d);
+    if(proc->proc)
+      (*(proc->proc))(d);
   }
 }
 
 void explain(struct processor *p)
 {
-  void (**func)(void);
-  for(func = p->explain; *func; func++)
+  struct proc *proc;
+  for(proc = p->proc; proc->explain; proc++)
   {
-    (*func)();
+    if(proc->explain)
+      (*(proc->explain))();
   }
 }
 
-void add_proc(struct processor *p, void *proc, void *explain)
+void add_proc(struct processor *p, struct proc *proc)
 {
-  p->proc[p->num] = proc;
-  p->explain[p->num] = explain;
+  p->proc[p->num].proc = proc->proc;
+  p->proc[p->num].explain = proc->explain;
   p->num++;
 }
 
@@ -102,13 +109,22 @@ struct processor d2proc;
 int main(void)
 {
   struct data1 d1 = { 1, 2 };
-  add_proc(&d1proc, print_data1_01, print_data1_01_exp);
-  add_proc(&d1proc, print_data1_02, print_data1_02_exp);
+  struct proc p = { (void *)print_data1_01, print_data1_01_exp };
+  add_proc(&d1proc, &p);
+
+  p.proc = (void *)print_data1_02;
+  p.explain = print_data1_02_exp;
+  add_proc(&d1proc, &p);
   proc(&d1proc, &d1);
 
   struct data2 d2 = { "DATA", 3.25, 5.5 };
-  add_proc(&d2proc, print_data2_01, print_data2_01_exp);
-  add_proc(&d2proc, print_data2_02, print_data2_02_exp);
+  p.proc = (void *)print_data2_01;
+  p.explain = print_data2_01_exp;
+  add_proc(&d2proc, &p);
+
+  p.proc = (void *)print_data2_02;
+  p.explain = print_data2_02_exp;
+  add_proc(&d2proc, &p);
   proc(&d2proc, &d2);
 
   explain(&d1proc);
