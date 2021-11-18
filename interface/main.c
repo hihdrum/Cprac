@@ -70,13 +70,13 @@ struct proc
   void (*explain)(void);
 };
 
-struct processor
+struct data_processor
 {
   int num;
   struct proc proc[10];
 };
 
-void proc(struct processor *p, void *d)
+void proc(struct data_processor *p, void *d)
 {
   struct proc *proc;
   for(proc = p->proc; proc->proc; proc++)
@@ -86,7 +86,7 @@ void proc(struct processor *p, void *d)
   }
 }
 
-void explain(struct processor *p)
+void explain(struct data_processor *p)
 {
   struct proc *proc;
   for(proc = p->proc; proc->explain; proc++)
@@ -96,15 +96,15 @@ void explain(struct processor *p)
   }
 }
 
-void add_proc(struct processor *p, struct proc *proc)
+void add_proc(struct data_processor *p, struct proc *proc)
 {
   p->proc[p->num].proc = proc->proc;
   p->proc[p->num].explain = proc->explain;
   p->num++;
 }
 
-struct processor d1proc;
-struct processor d2proc;
+struct data_processor d1proc;
+struct data_processor d2proc;
 
 int main(void)
 {
