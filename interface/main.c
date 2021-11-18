@@ -53,10 +53,9 @@ struct proc
 void proc(struct proc *p, void *d)
 {
   void (**func)(void *) = p->proc;
-  while(*func)
+  for(; *func; func++)
   {
     (*func)(d);
-    func++;
   }
 }
 
