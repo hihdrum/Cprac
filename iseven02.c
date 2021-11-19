@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+/* 0:奇数, 1:偶数 */
 int isEven(int x)
 {
   if(x % 2 == 0)
