@@ -1378,6 +1378,7 @@ $ ./a.out
 以下は0からnまでの整数の和を求めるプログラムである。
 実際に記述し実行してみよ。
 
+#+name : sumFor.c
 #+begin_src C
 #include <stdio.h>
 
