@@ -225,7 +225,8 @@ XX指向プログラミング言語でプログラムを記述したから、XX�
 C言語は素直に上から下に順次実行されてきますので、処理を上から下に並べて記述すれば順次実行されます。
 以下のプログラムを作成し、実際に動作させてみなさい。
 
-$ cat junn.c 
+#+name : junn.c
+#+begin_src c
 #include <stdio.h>
 
 int main(void)
@@ -235,6 +236,7 @@ int main(void)
 
   return 0;
 }
+#+end_src
 
 ** 問題
 
