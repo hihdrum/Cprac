@@ -1340,6 +1340,7 @@ $ seq 30 | while read x; do ./a.out $x; echo -n " "; done
 以下は0からnまでの整数の和を求めるプログラムである。
 実際に記述し実行してみよ。
 
+#+name : sumWhile.c
 #+begin_src C
 #include <stdio.h>
 
