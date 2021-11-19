@@ -650,10 +650,10 @@ x1 = 11
 
 *** 問題
 1. 常に失敗(0)を返す関数falseを作成し実際に使用してみよ。(false.c)
-2. float型の引数を受け取り、その値の2乗を返す関数square_floatを作成し、実際に使用してみよ。
-3. float型の引数を受け取り、その値の3乗を返す関数cube_floatを作成し、実際に使用してみよ。
+2. float型の引数を受け取り、その値の2乗を返す関数square_floatを作成し、実際に使用してみよ。(square.c)
+3. float型の引数を受け取り、その値の3乗を返す関数cube_floatを作成し、実際に使用してみよ。(square.c)
    作成にあたり、square_floatを利用せよ。
-4. float型の引数を受け取り、その値の4乗を返す関数quad_floatを作成し、実際に使用してみよ。
+4. float型の引数を受け取り、その値の4乗を返す関数quad_floatを作成し、実際に使用してみよ。(square.c)
    作成にあたり、square_floatを利用せよ。
 6. 2つの整数の和を計算する関数addを作成し実際に使用してみよ。(add.c)
 5. Hello, world!と画面に出力する関数printHelloを作成しなさい。
