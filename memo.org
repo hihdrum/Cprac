@@ -167,12 +167,15 @@ helloworld.cでは画面に文字列を出力(printf)するために、おまじ
 
 以下のreturn0.cを作成し実行させてみなさい。
 
-$ cat return0.c 
+#+name: return0.c
+#+begin_src c
 int main(void)
 {
   return 0;
 }
+#+end_src
 
+#+result : return0.c
 $ gcc -Wall return0.c 
 $ ./a.out
 $ echo $?
