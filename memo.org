@@ -25,33 +25,45 @@ int main(void)                /* main関数 : おまじない */
 プログラムを記述したこの様なファイルをソースコードといいます。
 作成できたら、コマンドとして実行できるファイルに変換します。
 
+#+begin_example
 $ gcc helloworld.c 
+#+end_example
 
 a.outというファイルができていたら、以下の様に実行します。
 
+#+begin_example
 $ ./a.out 
 Hello, world!
+#+end_example
 
 画面に「Hello, world!」は出力されましたでしょうか。
 a.out以外のファイル名にしたい場合は、はオプション-oを使用します。
 
+#+begin_example
 $ gcc helloworld.c -o helloworld
 $ ls helloworld
 helloworld
+#+end_example
 
 ** 実行ファイルができるまでの各工程
 テキストファイルから実行可能なファイルになるまでは以下のように
 複数の工程に分かれています。
 
 1. プリプロセス(ヘッダファイルの処理など)
- 　  $ gcc -E helloworld.c
+   #+begin_example
+   $ gcc -E helloworld.c
+   #+end_example
 
 2. コンパイル(.c -> .S)(アセンブラ)
-     $ gcc -S helloworld.c
+   #+begin_example
+   $ gcc -S helloworld.c
+   #+end_example
 
 3. アセンブル(.c -> .o)(オブジェクトファイルの生成)
-     $ gcc -c helloworld.c
-
+   #+begin_example
+   $ gcc -c helloworld.c
+   #+end_example
+   
 4. リンク
     自分もよくわかっていないので、詳しくは説明できません。
 
@@ -62,8 +74,11 @@ helloworld
 上記のオプションはgccのマニュアルにも記載があり、ヘルプオプション(gcc --help)でも確認できます。
 
 以下のコマンドを実行し、実際に確認してみて下さい。
+
+#+begin_example
 $ man gcc
 $ gcc --help
+#+end_example
 
 マニュアルやヘルプにはアセンブラへの変換をコンパイルと呼んでいますが、会話の中では
 実行ファイルの作成までをコンパイルといったり、オブジェクトファイルの作成までをコンパイルと
@@ -72,6 +87,7 @@ $ gcc --help
 *** 発展:オブジェクトファイルのダンプ
 オブジェクトの情報はobjdumpコマンドで見ることができます。
 
+#+begin_example
 $ gcc -c helloworld.c
 $ objdump -d helloworld.o 
 
@@ -91,6 +107,7 @@ helloworld.o:     ファイル形式 elf64-x86-64
   1a:	c3                   	retq 
         ^^^^^^^^^^^^^^^^^^^^^^  ^^^^アセンブラ
         マシン語
+#+end_example
 
 -dはディスアセンブルオプションとなっています。左の部分はマシン語になっていて、CPUが理解できる命令になっています。
 例えば、オフセット4の0x55は「push %rbp」の命令に対応していことになります。
@@ -102,11 +119,13 @@ helloworld.o:     ファイル形式 elf64-x86-64
 私はこれまでC言語の仕様を気にしてコードを書いたことはありませんが、この機会に情報を仕入れてみました。
 私の環境ではGCCを使用しており、バージョンを以下の用に確認すると9.3.0でした。
 
+#+begin_example
 $ gcc --version
 gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
 Copyright (C) 2019 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#+end_example
 
 gccのinfoを見ると「2.1 C Language」には、仕様C11にGNUの拡張を加えたものがデフォルトの
 動作になっていると記載がありました。
@@ -1813,3 +1832,29 @@ open, read, writeを使用せよ。
  - [[https://ja.wikipedia.org/wiki/Netcat][netcat]]
 
 ** echoクライアント, echoサーバ
+** 有理数計算
+
+参考 : [[https://sicp.iijlab.net/fulltext/x211.html][2.1.1 例: 有理数の算術演算]]
+
+- 有理数 : rational number
+- 分数 : fraction
+- 分母 : denominator
+- 分子 : numerator
+- 正規化 : normalize
+- 商 : quotient
+- 余り : remainder
+- 割り算 : division
+
+*** 実装するもの
+
+- 生成 : make-rat
+- 和 : add-rat
+- 差 : sub-rat
+- 積 : mul-rat
+- 割り算 : div-rat
+- 等値 : equal-rat
+- 約分 : 
+- プリンタ : prnt-rat
+- 符号正規化
+  
+  
