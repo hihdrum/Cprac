@@ -1,0 +1,798 @@
+#+title: 有理数計算
+
+* やりたいこと
+
+  - 有理数計算を行いたい。
+    例としては以下である。
+  
+    #+begin_example latex
+    1 / 2 - 3 / 4 =  5/ 4
+    #+end_example
+
+  - [ ] どのように実装するか。
+    - [ ] 変数のみで頑張る方法 : 言語にデータをまとめる機能が用意されていない場合
+    - [ ] データをまとめる方法を利用する。
+      - [ ] 構造体
+      - [ ] 配列
+      - [ ] クラス
+      - [ ] クロージャ
+  - [ ] 実装するもの
+    - [ ] コンストラクタ
+      - [ ] 符号の正規化として分子に符号をつける。
+      - [ ] 約分
+      - [ ] どのように生成物を返すか。
+        - [ ] 関数の引数
+        - [ ] 戻り値
+        - [ ] ヒープアドレス
+    - [ ] 演算
+      - [ ] 加算
+      - [ ] 減算
+      - [ ] 乗算
+      - [ ] 除算
+  - [ ] その他
+    - [ ] 分母が0になるようなケースをどのように防ぐか。
+    - [ ] 構造体のメンバを隠すにはどうすればよいか。
+    - [ ] 除算で分子が0の値をどのように防ぐか。
+    - [ ] 演算子のオーバーロード
+    - [ ] Haskellのクラス
+
+* 問題
+
+  以下のような計算を行えるようにしたい。
+
+  
+
+* 有理数計算
+
+分数の計算をプログラムを使って行わせたい。
+例えば以下のような計算である。
+
+\[
+\frac{1}{2} + \frac{2}{3} = \frac{7}{6}
+\]
+
+C言語では分数を計算する仕組みは用意されていない。
+そのため、以下のようにコードを書いたとしても
+意図した結果は得られない。
+
+#+name: 分数が計算されない例
+#+begin_src C : includes <stdio.h>
+  int ans = 1 / 2 + 2 / 3;
+  printf("ans = %d", ans);
+#+end_src
+
+C言語としては、1/2のintの割り算の結果が0となり、同様に3/4の割り算の結果が0となる。
+従ってansには0が入る。実際に実行してみると以下のようになる。
+
+#+RESULTS: 分数が計算されない例
+: ans = 0
+
+計算する仕組みを考え、実装してみよ。
+  
+** 実装例 : 変数と基本的な演算子
+
+変数と基本的な演算子(+, -, *, /)について知っている場合は、
+データをひとまとめに扱う方法を知っていなくとも、どうにかできるだろう。
+
+#+name: 変数と基本的な演算子による計算例
+#+begin_src C : include <stdio.h>
+  /* 分数x */
+  int x_numer = 1; /* 分子 */
+  int x_denom = 2; /* 分母 */
+
+  int y_numer = 2;
+  int y_denom = 3;
+
+  /* 通分して、足し合わせる。*/
+  int ans_numer = x_numer * y_denom + y_numer * x_denom;
+  int ans_denom = x_denom * y_denom;
+
+  printf("%d/%d + %d/%d = %d/%d\n", x_numer, x_denom, y_numer, y_denom, ans_numer, ans_denom);
+#+end_src
+
+#+RESULTS: 変数と基本的な演算子による計算例
+: 1/2 + 2/3 = 7/6
+
+考え方は以下のとおりである。
+
+  - xとyの分母と分子を分けて考える。
+  - xまたはyに関係する変数であることを?_numer, ?_denomのようにして識別した。
+  - 通分して足し合わせるという考えをコードにした。
+
+確かに計算はできるが、あまり嬉しくはない。
+この使い方であれば、電卓に自由に宣言できる変数が追加されたような状態である。
+
+** 実装例 : 関数の利用
+
+前回([[実装例 : 変数と基本的な演算子]])にて、実装した。
+C言語の機能を使ってもう少し便利にしたい。
+
+関数を利用してみることにする。関数型はどのようにすればよいか考えてみよ。
+入力の引数は、int型で4つは必要である。
+
+#+begin_example
+  rat_add(int x_numer, int x_denom, int y_numer, int y_denom)
+#+end_example
+
+さて、戻り値はどうすればよいだろうか。returnで返せる値は1つなので、どうにかなる
+別の案を考えなければならない。例えば、以下のようにする。
+
+#+begin_example
+  rat_add(int x_numer, int x_denom, int y_numer, int y_denom, int ans_numer, int ans_denom)
+#+end_example
+
+ただ、上記だとans_numer, and_denomに計算結果は戻らない。理由は、値渡しになっているからである。
+そのため、計算結果を戻すには、計算結果を戻したい場所のポインタを渡すようにする。
+つまり参照渡しを利用する。計算結果も引数で受け取ることにしたので、関数の戻り値は
+別の用途で使用できるが、とりあえずは使わないことにする。
+
+#+begin_example
+  void rat_add(int x_numer, int x_denom, int y_numer, int y_denom, int *ans_numer, int *ans_denom)
+#+end_example
+
+#+name: rat_add実装
+#+begin_src C
+  void rat_add(int x_numer, int x_denom, int y_numer, int y_denom, int *ans_numer, int *ans_denom) {
+    *ans_numer = x_numer * y_denom + y_numer * x_denom;
+    *ans_denom = x_denom * y_denom;
+  }
+#+end_src
+
+#+name: rat_add実行
+#+begin_src C
+
+  #include <stdio.h>
+  int main(void) {
+
+      int x_numer = 1; /* 分子 */
+      int x_denom = 2; /* 分母 */
+
+      int y_numer = 2;
+      int y_denom = 3;
+
+      /* 通分して、足し合わせる。*/
+      int ans_numer;
+      int ans_denom;
+
+      rat_add(x_numer, x_denom, y_numer, y_denom, &ans_numer, &ans_denom);
+
+      printf("%d/%d + %d/%d = %d/%d\n", x_numer, x_denom, y_numer, y_denom, ans_numer, ans_denom);
+
+      return 0;
+    }
+#+end_src
+
+#+begin_src C :results output :noweb yes
+
+  <<rat_add実装>>
+  <<rat_add実行>>
+  
+#+end_src
+
+#+RESULTS:
+: 1/2 + 2/3 = 7/6
+
+** 実装例 : 構造体の利用
+
+C言語では、まとまりのあるデータを表現に構造体を利用できる。これを使って、実装してみる。
+
+#+name: rational構造体定義
+#+begin_src C
+  struct rational {
+    int numer;
+    int denom;
+    };
+#+end_src
+
+これを利用して関数を書き直す。
+
+#+name: rat_add実装2
+#+begin_src C
+  void rat_add(struct rational x, struct rational y, struct rational *ans) {
+    ans->numer = x.numer * y.denom + y.numer * x.denom;
+    ans->denom = x.denom * y.denom;
+  }
+#+end_src
+
+#+name: rat_add実行2
+#+begin_src C
+
+  #include <stdio.h>
+  int main(void) {
+
+    struct rational x = { .numer = 1, .denom = 2 };
+    struct rational y = { .numer = 2, .denom = 3 };
+
+    struct rational ans;
+
+    rat_add(x, y, &ans);
+
+    printf("%d/%d + %d/%d = %d/%d\n", x.numer, x.denom, y.numer, y.denom, ans.numer, ans.denom);
+
+    return 0;
+  }
+#+end_src
+
+#+begin_src C :results output :noweb yes
+
+  <<rational構造体定義>>
+  <<rat_add実装2>>
+  <<rat_add実行2>>
+
+#+end_src
+
+#+RESULTS:
+: 1/2 + 2/3 = 7/6
+
+rat_add([[rat_add実装2]])であるが、構造体を利用したことにより戻り値ように用意していたansへの参照が1つになった。
+こうなると、returnで戻り値を返すこともできる。実装してみよう。
+
+#+name: rat_add実装3
+#+begin_src C
+  struct rational  rat_add(struct rational x, struct rational y) {
+    return (struct rational) {
+      .numer = x.numer * y.denom + y.numer * x.denom,
+      .denom = x.denom * y.denom
+    };
+  }
+#+end_src
+
+#+name: rat_add実行3
+#+begin_src C
+  #include <stdio.h>
+
+  int main(void) {
+
+    struct rational x = { .numer = 1, .denom = 2 };
+    struct rational y = { .numer = 2, .denom = 3 };
+
+    struct rational ans = rat_add(x, y);
+
+    printf("%d/%d + %d/%d = %d/%d\n", x.numer, x.denom, y.numer, y.denom, ans.numer, ans.denom);
+
+    return 0;
+  }
+#+end_src
+
+#+begin_src C :results output :noweb yes
+
+  <<rational構造体定義>>
+  <<rat_add実装3>>
+  <<rat_add実行3>>
+
+#+end_src
+
+#+RESULTS:
+: 1/2 + 2/3 = 7/6
+
+** 実装例 : 配列の利用
+
+筋の考え方では無いが、上記の構造体利用目的は分数の分子と分母を論理的にまとめて扱うことである。
+配列は同型の複数要素が連続メモリ領域にあることを表すデータ構造であるが、ある配列に含まれるデータが
+まとまりのあるデータと見ることもできる。この考えで実装してみよう。
+
+#+name: 分数と配列添字の対応
+#+begin_center C :defines
+#define RAT_ELMS 2
+#define NUMER_INDEX 0
+#define DENOM_INDEX 1
+#+end_center
+
+#+begin_drawer
+上記のdefineがターゲットで引き込めないが、どうすればよいだろうか。
+#+end_drawer
+
+#+name: rat_add実装4
+#+begin_src C
+
+  #define RAT_ELMS 2
+  #define NUMER_INDEX 0
+  #define DENOM_INDEX 1
+
+  void rat_add(int x[RAT_ELMS], int y[RAT_ELMS], int ans[RAT_ELMS]) {
+    ans[NUMER_INDEX] = x[NUMER_INDEX] * y[DENOM_INDEX] + y[NUMER_INDEX] * x[DENOM_INDEX];
+    ans[DENOM_INDEX] = x[DENOM_INDEX] * y[DENOM_INDEX];
+  }
+#+end_src
+
+#+name: rat_add実行4
+#+begin_src C
+  #include <stdio.h>
+
+  int main(void) {
+
+    int x[RAT_ELMS] = { 1, 2 };
+    int y[RAT_ELMS] = { 2, 3 };
+
+    int ans[RAT_ELMS];
+
+    rat_add(x, y, ans);
+
+    printf("%d/%d + %d/%d = %d/%d\n", x[NUMER_INDEX], x[DENOM_INDEX], y[NUMER_INDEX], y[DENOM_INDEX], ans[NUMER_INDEX], ans[DENOM_INDEX]);
+
+    return 0;
+  }
+#+end_src
+
+#+begin_src C :results output :noweb yes
+
+  <<分数と配列添字の対応>>
+  <<rat_add実装4>>
+  <<rat_add実行4>>
+
+#+end_src
+
+#+RESULTS:
+: 1/2 + 2/3 = 7/6
+
+** データ抽象
+
+計算機プログラムの構造と解釈では、「2.1 データ抽象入門」でデータ抽象の考え方記載されている。
+この考えに取りれて、構造体、配列のどちらを利用した場合でも同じように扱うことを目指してみよう。
+
+#+name: データ抽象_インタフェース
+#+begin_src C
+
+  struct rat_if {
+
+    struct rational *(*rat_new)(int numer, int denom);
+    int (*rat_getNumer)(struct rational *rat);
+    int (*rat_getDenom)(struct rational *rat);
+  };
+
+#+end_src
+
+*** 構造体
+
+#+name: データ抽象_構造体
+#+begin_src C
+
+  struct rational str_rat_new(int numer, int denom) {
+    struct rational *rat = malloc(sizeof(struct rational));
+
+    if(NULL == rat) {
+      abort();
+    }
+
+    *rat = (struct rational) { .numer = numer, .denom = denom };
+
+    return rat;
+  }
+
+  int str_getNumer(struct rational rat) {
+    return rat.numer;
+  }
+
+  int str_getDenom(struct rational rat) {
+    return rat.denom;
+  }
+#+end_src
+
+
+* 蛇足 : クロージャを利用したもの。
+
+* 蛇足 : C++ : 演算子のオーバーロード
+
+* 蛇足 : Haskell 自作の有理数演算体系
+  
+* 変数で分母と分子を変数名で識別しながら計算する例
+
+#+begin_src C :includes <stdio.h>
+int main(void)
+{
+  int x_numer = 1;
+  int x_denom = 2;
+
+  int y_numer = 3;
+  int y_denom = 4;
+
+  int ret_numer = x_numer * y_denom + y_numer * x_denom;
+  int ret_denom = x_denom * y_denom;
+
+  printf("%d / %d + %d / %d = %d / %d\n",
+      x_numer, x_denom, y_numer, y_denom, ret_numer, ret_denom);
+
+  return 0;
+}
+#+end_src
+
+#+RESULTS:
+: 1 / 2 + 3 / 4 = 10 / 8
+
+- 分母と分子を変数の識別子で区別する。
+  - 分子 : numer
+  - 分母 : denom
+  - 変数をサポートしている言語であれば、構造体などが無くても計算を行うことができる。
+- 関数を利用していないので、毎回計算するとなると辛い。
+- 約分できていない。
+
+* 変数で分母と分子を識別しながら計算する例2
+
+#+begin_src C :include <stdio.h>
+void add_rat(int x_numer, int x_denom, int y_numer, int y_denom, int *ret_numer, int *ret_denom)
+{ 
+  *ret_numer = x_numer * y_denom + y_numer * x_denom;
+  *ret_denom = x_denom * y_denom;
+}
+
+int main(void)
+{
+  int x_numer = 1;
+  int x_denom = 2;
+
+  int y_numer = 3;
+  int y_denom = 4;
+
+  int ret_numer;
+  int ret_denom;
+
+  add_rat(x_numer, x_denom, y_numer, y_denom, &ret_numer, &ret_denom);
+
+  printf("%d / %d + %d / %d = %d / %d\n",
+      x_numer, x_denom, y_numer, y_denom, ret_numer, ret_denom);
+
+  return 0;
+}
+#+end_src
+
+#+RESULTS:
+: 1 / 2 + 3 / 4 = 10 / 8
+
+- 加算を行う関数add_ratを用意した。
+  - 戻り値では、1つの値しか返せないため、結果の分子と分母は
+    ポインタで結果の保存先を指定するようにしている。
+
+* 構造体を利用した例
+
+#+begin_src C :include <stdio.h>
+struct rational
+{
+  int numer;
+  int denom;
+};
+
+struct rational add_rat(struct rational x, struct rational y)
+{ 
+  int ret_numer = x.numer * y.denom + y.numer * x.denom;
+  int ret_denom = x.denom * y.denom;
+
+  return (struct rational){ .numer = ret_numer, .denom = ret_denom};
+}
+
+void print_rat(struct rational rat)
+{ 
+  printf("%d / %d", rat.numer, rat.denom);
+}
+
+int main(void)
+{
+  struct rational x = { .numer = 1, .denom = 2 };
+  struct rational y = { .numer = 3, .denom = 4 };
+
+  struct rational ret = add_rat(x, y);
+
+  print_rat(x);
+  printf(" + ");
+  print_rat(y);
+  printf(" = ");
+  print_rat(ret);
+  putchar('\n');
+
+  return 0;
+}
+#+end_src
+
+#+RESULTS:
+: 1 / 2 + 3 / 4 = 10 / 8
+
+* コンストラクタ1
+
+#+begin_src C :include <stdio.h>
+struct rational
+{
+  int numer;
+  int denom;
+};
+
+struct rational make_rat(int numer, int denom)
+{ 
+  return (struct rational){ .numer = numer, .denom = denom };
+}
+
+struct rational add_rat(struct rational x, struct rational y)
+{ 
+  int ret_numer = x.numer * y.denom + y.numer * x.denom;
+  int ret_denom = x.denom * y.denom;
+  
+  return make_rat(ret_numer, ret_denom);
+}
+
+void print_rat(struct rational rat)
+{ 
+  printf("%d / %d", rat.numer, rat.denom);
+}
+
+int main(void)
+{
+  struct rational x = make_rat(1, 2);
+  struct rational y = make_rat(3, 4);
+
+  struct rational ret = add_rat(x, y);
+
+  print_rat(x);
+  printf(" + ");
+  print_rat(y);
+  printf(" = ");
+  print_rat(ret);
+  putchar('\n');
+
+  return 0;
+}
+#+end_src
+
+#+RESULTS:
+: 1 / 2 + 3 / 4 = 10 / 8
+
+- struct rationalを関数で作成し返すようにした。
+
+* コンストラクタ2, 約分
+
+#+begin_src C :include <stdio.h>
+int gcd(int x, int y)
+{ 
+  if(x > y)
+  { 
+    int rem = x % y;
+    if(0 == rem)
+    {
+      return y;
+    } 
+    
+    return gcd(y, rem);
+  } 
+  
+  int rem = y % x;
+  if(0 == rem)
+  { 
+    return x;
+  } 
+  
+  return gcd(x, rem);
+}
+
+struct rational
+{
+  int numer;
+  int denom;
+};
+
+struct rational make_rat(int numer, int denom)
+{ 
+  int iGcd = gcd(numer, denom);
+
+  return (struct rational){ .numer = numer / iGcd, .denom = denom / iGcd };
+}
+
+struct rational add_rat(struct rational x, struct rational y)
+{ 
+  int ret_numer = x.numer * y.denom + y.numer * x.denom;
+  int ret_denom = x.denom * y.denom;
+  
+  return make_rat(ret_numer, ret_denom);
+}
+
+void print_rat(struct rational rat)
+{ 
+  printf("%d / %d", rat.numer, rat.denom);
+}
+
+int main(void)
+{
+  struct rational x = make_rat(1, 2);
+  struct rational y = make_rat(3, 4);
+
+  struct rational ret = add_rat(x, y);
+
+  print_rat(x);
+  printf(" + ");
+  print_rat(y);
+  printf(" = ");
+  print_rat(ret);
+  putchar('\n');
+
+  return 0;
+}
+#+end_src
+
+#+RESULTS:
+: 1 / 2 + 3 / 4 = 5 / 4
+
+- 約分するようにした。
+
+* 減算
+
+#+begin_src C :include <stdio.h>
+int gcd(int x, int y)
+{
+  if(x > y)
+  {
+    int rem = x % y;
+    if(0 == rem)
+    {
+      return y;
+    }
+
+    return gcd(y, rem);
+  }
+
+  int rem = y % x;
+  if(0 == rem)
+  {
+    return x;
+  }
+
+  return gcd(x, rem);
+}
+
+struct rational
+{
+  int numer;
+  int denom;
+};
+
+struct rational make_rat(int numer, int denom)
+{
+  int iGcd = gcd(numer, denom);
+
+  return (struct rational){ .numer = numer / iGcd, .denom = denom / iGcd };
+}
+
+struct rational add_rat(struct rational x, struct rational y)
+{
+  int ret_numer = x.numer * y.denom + y.numer * x.denom;
+  int ret_denom = x.denom * y.denom;
+
+  return make_rat(ret_numer, ret_denom);
+}
+
+struct rational sub_rat(struct rational x, struct rational y)
+{
+  int ret_numer = x.numer * y.denom - y.numer * x.denom;
+  int ret_denom = x.denom * y.denom;
+
+  return make_rat(ret_numer, ret_denom);
+}
+
+void print_rat(struct rational rat)
+{
+  printf("%d / %d", rat.numer, rat.denom);
+}
+
+int main(void)
+{
+  struct rational x = make_rat(1, 2);
+  struct rational y = make_rat(3, 4);
+
+  struct rational ret = add_rat(x, y);
+
+  print_rat(x);
+  printf(" + ");
+  print_rat(y);
+  printf(" = ");
+  print_rat(ret);
+  putchar('\n');
+
+  ret = sub_rat(x, y);
+  print_rat(x);
+  printf(" - ");
+  print_rat(y);
+  printf(" = ");
+  print_rat(ret);
+  putchar('\n');
+
+  return 0;
+}
+#+end_src
+
+#+RESULTS:
+| 1 | / | 2 | + | 3 | / | 4 | = | 5 | / |  4 |
+| 1 | / | 2 | - | 3 | / | 4 | = | 1 | / | -4 |
+
+- マイナス符号が分母側についている。
+  - gcd計算がマイナスで返っている。
+
+* 符号の補正
+
+#+begin_src C :includes <stdlib.h> <stdio.h>
+int gcd(int x, int y)
+{
+  if(x > y)
+  {
+    int rem = x % y;
+    if(0 == rem)
+    {
+      return y;
+    }
+
+    return gcd(y, rem);
+  }
+
+  int rem = y % x;
+  if(0 == rem)
+  {
+    return x;
+  }
+
+  return gcd(x, rem);
+}
+
+struct rational
+{
+  int numer;
+  int denom;
+};
+
+struct rational make_rat(int numer, int denom)
+{
+  int iGcd = gcd(abs(numer), abs(denom));
+  int sign = 1;
+  if(0 > denom)
+  {
+    sign = -1;
+  }
+
+  return (struct rational){ .numer = sign * numer / iGcd, .denom = sign * denom / iGcd };
+}
+
+struct rational add_rat(struct rational x, struct rational y)
+{
+  int ret_numer = x.numer * y.denom + y.numer * x.denom;
+  int ret_denom = x.denom * y.denom;
+
+  return make_rat(ret_numer, ret_denom);
+}
+
+struct rational sub_rat(struct rational x, struct rational y)
+{
+  int ret_numer = x.numer * y.denom - y.numer * x.denom;
+  int ret_denom = x.denom * y.denom;
+
+  return make_rat(ret_numer, ret_denom);
+}
+
+void print_rat(struct rational rat)
+{
+  printf("%d / %d", rat.numer, rat.denom);
+}
+
+int main(void)
+{
+  struct rational x = make_rat(1, 2);
+  struct rational y = make_rat(3, 4);
+
+  struct rational ret = add_rat(x, y);
+
+  print_rat(x);
+  printf(" + ");
+  print_rat(y);
+  printf(" = ");
+  print_rat(ret);
+  putchar('\n');
+
+  ret = sub_rat(x, y);
+  print_rat(x);
+  printf(" - ");
+  print_rat(y);
+  printf(" = ");
+  print_rat(ret);
+  putchar('\n');
+
+  return 0;
+}
+#+end_src
+
+#+RESULTS:
+| 1 | / | 2 | + | 3 | / | 4 | = |  5 | / | 4 |
+| 1 | / | 2 | - | 3 | / | 4 | = | -1 | / | 4 |
+
+
