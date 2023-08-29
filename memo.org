@@ -1,26 +1,46 @@
 #+title: C言語練習
+#+startup: content
 
 学習の流れ
 
 * 最初のプログラムと仕様情報
+
+** C言語開発環境の確認
+
+#+begin_example
+$ gcc --version
+gcc (Ubuntu 12.3.0-1ubuntu1~23.04) 12.3.0
+Copyright (C) 2022 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#+end_example
+
+:対応を考える:
+$の読み方をどのように説明すればよいだろうか。
+所持しているRustの書籍を参考にしてみよう。
+:END:
+
 ** 最初のプログラム「Hello, world!」
-最初のプログラムの定番であるハローワールドを作成してみましょう。
+
+最初に書くプログラムの定番であるハローワールドを作成してみましょう。
 適当なテキストエディタを使ってhelloworld.cを作成して下さい。中身は以下のとおりです。
 
-※表記について
-$はシェルのプロンプトをプロンプトとなります。シェルにcatコマンドを引数helloworld.cを
-渡している状況となりますので、#includeからはhelloworld.cの内容となります。
+#+name: helloworld
+#+caption: 最初のソースコード helloworld.c
+#+begin_src C :exports both :cache yes :results output :tangle helloworld.c
+#include <stdio.h>
 
-#+neme : helloworld.c 
-#+begin_src c
-#include <stdio.h>            /* 最初はおまじない */
-
-int main(void)                /* main関数 : おまじない */
+int main(void)
 {
   printf("Hello, world!\n");
-  return 0;                   /* 関数の戻り値 */
+  return 0;
 }
 #+end_src
+
+#+RESULTS[ab8f40efed30bfd8dee783569b3a21849bbb4de2]: helloworld
+: Hello, world!
+
+#+RESULTS:
 
 プログラムを記述したこの様なファイルをソースコードといいます。
 作成できたら、コマンドとして実行できるファイルに変換します。
@@ -29,7 +49,13 @@ int main(void)                /* main関数 : おまじない */
 $ gcc helloworld.c 
 #+end_example
 
-a.outというファイルができていたら、以下の様に実行します。
+入力ミスがある場合は何らかのエラーメッセージが出力されます。
+その場合は、[[helloworld.c]]のソースコードと自身で入力したソースコードをよく比較してみてください。
+
+  - スペースは半角を使用する。
+
+異常などが出力されていない場合はコンパイルが成功しています。
+a.outというファイルができているので、以下の様に実行します。
 
 #+begin_example
 $ ./a.out 
@@ -46,6 +72,7 @@ helloworld
 #+end_example
 
 ** 実行ファイルができるまでの各工程
+
 テキストファイルから実行可能なファイルになるまでは以下のように
 複数の工程に分かれています。
 
@@ -65,10 +92,10 @@ helloworld
    #+end_example
    
 4. リンク
-    自分もよくわかっていないので、詳しくは説明できません。
+    自分もよくわかっていないので、詳しくは説明できませんが、オブジェクトファイルを実行形式に合わせて、
+    結合するなど処理が行われます。白状しますと、リンクの具体的な動作は私もわかりません。
 
 これらの工程は最初のうちはそこまで気にする必要がありません。
-白状しますと、リンクの具体的な動作は私もわかりません。
 
 たいていは、gccまたは、gcc -cの使用で十分と思います。
 上記のオプションはgccのマニュアルにも記載があり、ヘルプオプション(gcc --help)でも確認できます。
@@ -80,12 +107,14 @@ $ man gcc
 $ gcc --help
 #+end_example
 
-マニュアルやヘルプにはアセンブラへの変換をコンパイルと呼んでいますが、会話の中では
-実行ファイルの作成までをコンパイルといったり、オブジェクトファイルの作成までをコンパイルと
-言ったり様々です。なので、厳密な場合でなければ話の文脈で判断して下さい。
+マニュアルとヘルプにはアセンブラへの変換をコンパイルと記述されています。
+現場における個人的な印象ですが、会話の中では実行ファイルの作成までをコンパイルといったり、
+オブジェクトファイルの作成までをコンパイルといったり様々です。
+なので、厳密な場合でなければ話の文脈で判断することになると思います。
 
 *** 発展:オブジェクトファイルのダンプ
-オブジェクトの情報はobjdumpコマンドで見ることができます。
+
+オブジェクトファイルの情報はobjdumpコマンドで見ることができます。
 
 #+begin_example
 $ gcc -c helloworld.c
@@ -109,14 +138,15 @@ helloworld.o:     ファイル形式 elf64-x86-64
         マシン語
 #+end_example
 
--dはディスアセンブルオプションとなっています。左の部分はマシン語になっていて、CPUが理解できる命令になっています。
+-dはディスアセンブルオプションとなっています。左の部分はCPUが理解するマシン語の命令になっています。
 例えば、オフセット4の0x55は「push %rbp」の命令に対応していことになります。
 
 極端な話をすれば、バイナリエディタで、main部分に出力された内容のデータを作成したものと、gccによって出力された
 上記のデータが同じであればmainは同じ動きをします。
 
 ** 仕様情報
-私はこれまでC言語の仕様を気にしてコードを書いたことはありませんが、この機会に情報を仕入れてみました。
+
+私はこれまでC言語の仕様を気にしてコードを書いたことはありませんが、この機会に情報を探してみました。
 私の環境ではGCCを使用しており、バージョンを以下の用に確認すると9.3.0でした。
 
 #+begin_example
@@ -127,8 +157,17 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #+end_example
 
+:メモ:
+古い情報になっているので、現在使用している環境の値に置き換わるような仕組みにしたい。
+:END:
+
 gccのinfoを見ると「2.1 C Language」には、仕様C11にGNUの拡張を加えたものがデフォルトの
 動作になっていると記載がありました。
+
+#+begin_quote
+  The default, if no C language dialect options are given, is
+  '-std=gnu17'
+#+end_quote
 
 仕様のドラフト版は以下からダウンロードできるのでダウンロードしてみて下さい。
 
@@ -140,29 +179,48 @@ gccのinfoを見ると「2.1 C Language」には、仕様C11にGNUの拡張を�
 
 N1570のリンクからN1570.pdfが取得できます。
 
+:メモ:
+C17の情報に置き換える。
+org-modeのリンク機能も活用したい。
+:END:
+
 ** プログラムの終了状態
-シェルは最後に実行したプログラムの終了状態を$?に持っており、echoで値を確認することができます。
+
+シェルは最後に実行したプログラムの終了状態を~$?~に持っており、echoで値を確認することができます。
 true, falseコマンドを例に$?の実行結果を確認してみましょう。
 
 まずは、以下のコマンドでtrueとfalseのマニュアルを確認して下さい。
 
+#+begin_example
 $ man true
 $ man false
+#+end_example
 
 マニュアルの関連項目には完全なマニュアルはTexinfoマニュアルとして整備されていると記載があります。
 以下のコマンドでinfoを確認して下さい。
 
+#+begin_example
 $ info true
 $ info false
+#+end_example
 
 実際にtrue, falseコマンドを実行しマニュアルに記載された通りの終了ステータスが得られることを
 確認してみて下さい。
 
+#+begin_src shell
+  true; echo $?
+#+end_src
+
+#+begin_example
 $ true; echo $?
 0
+#+end_example
 
+#+begin_example
 $ false; echo $?
 1
+#+end_example
+
 
 tureやfalseの他にgrepコマンドなども成功と失敗を返しています。
 grepのマニュアルを参照し、どの様な終了ステータスを返すのかを確認してみて下さい。
@@ -1110,7 +1168,6 @@ evalTest(24) = D
 
 3. 小文字(a〜z)を大文字(A-Z)に変換するプログラムを作成せよ。
 
-
 ** switch
 
    switch(x)
@@ -1433,10 +1490,8 @@ $ ./a.out
 ** 問題
 
   1. 掛け算九九を出力するプログラムを作成せよ。
-
   2. 九九を拡張し、16x16の掛け算結果を出力するプログラムを作成せよ。
      出力は16進数にせよ。
-
   3. 図形の描画
      図形を描画するプログラムを作成せよ。
      なお、問題を解くにあたり必要な関数は自由に実装せよ。
@@ -1444,53 +1499,54 @@ $ ./a.out
      元ネタ：「明解 C言語」
 
      1. 横棒 3指定
-
-	***
-
+        #+begin_example
+        ***
+        #+end_example
      2. 四角形 4,2指定
-
-	*****
-	*****
-
+        #+begin_example
+        *****
+	    *****
+        #+end_example
      3. 直角三角形
 
-	1. 4指定
-
-	   * 
-	   **
-	   ***
+        1. 4指定
+           #+begin_example
+           *
+	       **
+	       ***
            ****
+           #+end_example
 
-	2. 4指定
-
-	      * 
-             **
-            ***
+        2. 4指定
+           #+begin_example
+           *
+           **
+           ***
            ****
-
+           #+end_example
      4. 二等辺三角形 3指定
-
-　　　　　　* 
-	 ***
+        #+begin_example
+          *
+         ***
         *****
-
+        #+end_example
      5. 平行四辺形 5,3指定
-
+        #+begin_example
         *****
          *****
           *****
-
-  1. 複利計算
+        #+end_example
+  4. 複利計算
 
      元金,年利,年数を指定して各年毎の元金を表示させてみよ。
-
-  2. 標準入力から入力されたバイト数をカウントし結果を出力するプログラムを作成せよ。
+  5. 標準入力から入力されたバイト数をカウントし結果を出力するプログラムを作成せよ。
      作成したプログラムの結果とwc -c の結果を比較してみよ。
-
-  3. 標準入力から入力された文字を16進数で出力するプログラムを作成せよ。
+  6. 標準入力から入力された文字を16進数で出力するプログラムを作成せよ。
      作成したプログラムの結果とodやhexdumpの結果を比較してみよ。
-
-  4. 整数の配列から最大値の情報を返す関数を実装し、main関数から呼び出してみなさい。
+  7. 整数の配列から最大値の情報を返す関数を実装し、main関数から呼び出してみなさい。
+  8. break, continue の使用例を考えてみなさい。
+  9. 2重ループからbreakする例を考えてみなさい。
+  10. gotoを利用してみなさい。
 
 * ポインタ
 ** 説明1
@@ -1746,6 +1802,11 @@ struct タグ名
 * 修飾
 * デバッガ(GDB)
 * 総合
+** 積を計算するプログラムを和で実装しなさい。
+** 商を計算するプログラムを差で実装しなさい。
+** 余り(剰余)を計算するプログラムを差で実装しなさい。
+** 商と余りを得るプログラムを差で実装しなさい。
+** ポインタ「const * char * const pChar」についてconstがどのような効果を持っているか考えてみなさい。
 ** IPv4のブロードキャストアドレス
    IPv4のIPアドレスとサブネットマスクを引数として、ブロードキャストアドレス
    を算出するプログラムを作成せよ。実装に詰まる場合は以下の流れを参考にせよ。
@@ -1809,7 +1870,6 @@ clean :
    コンパイルとリンクが行われる。
    依存関係の記述を修正してみよ。
 
-
 *** CppUTest
 
 ** #includeって何してるの?
@@ -1836,25 +1896,168 @@ open, read, writeを使用せよ。
 
 参考 : [[https://sicp.iijlab.net/fulltext/x211.html][2.1.1 例: 有理数の算術演算]]
 
-- 有理数 : rational number
-- 分数 : fraction
-- 分母 : denominator
-- 分子 : numerator
-- 正規化 : normalize
-- 商 : quotient
-- 余り : remainder
-- 割り算 : division
+** 配列に対する操作
 
-*** 実装するもの
+- 変換, map, functor
+- 条件が成立したものを集める。
+  - 条件は2パターン用意する。
+    - 偶数
+    - 3の倍数
+- 条件が成立しなかったものを集める。
+- 条件が、成立したものと成立しなかったものを別に集める。
 
-- 生成 : make-rat
-- 和 : add-rat
-- 差 : sub-rat
-- 積 : mul-rat
-- 割り算 : div-rat
-- 等値 : equal-rat
-- 約分 : 
-- プリンタ : prnt-rat
-- 符号正規化
+:アイデア:
+関数合成を使用する例も紹介したい。
+:END:
+
+*** 問題
+1から10までの整数値を保存した配列がある。
+
+#+name: 入力配列
+#+begin_src C
+  int array[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+#+end_src
+
+この配列の要素全てを2乗する処理を考えよ。その際に、以下を考えよ。
+
+- 元の配列の変更を許可する場合
+- 元の配列の変更を許可しない場合
+  - 処理結果の配列を引数として受け取る場合
+  - 処理結果の配列を返す場合
+
+*** 元の配列の変更を許可する場合の解答例
+
+#+begin_src C :results raw :noweb yes :cache yes :include <stdio.h>
+  int main(void) {
+
+    <<入力配列>>
+
+    /* 2乗の計算結果で更新する。*/
+    for(int i = 0; i < sizeof(array)/sizeof(int); i++) {
+      array[i] = array[i] * array[i];
+    }
+
+    /* 計算結果を確認する。*/
+    for(int i = 0; i < sizeof(array)/sizeof(int); i++) {
+      printf("array[%d] = %3d\n", i, array[i]);
+    }
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[1131e0893b61ab3335b67d767404ba6dfbda6115]:
+array[0] =   1
+array[1] =   4
+array[2] =   9
+array[3] =  16
+array[4] =  25
+array[5] =  36
+array[6] =  49
+array[7] =  64
+array[8] =  81
+array[9] = 100
+
+上記のプログラムを変更して遊んでみる。
+
+  1. 2上を計算する部分を関数化してみよ。
+  2. 計算結果を確認する部分を関数化してみよ。
+     1. まずは、思いつくままに関数化してみよ。
+     2. 汎用性を上げるにはどうすればよいだろうか。
+
+**** 2乗を計算する部分の関数化
+
+#+name: square関数実装
+#+begin_src C
+  int square(int x) {
+    return x * x;
+  }
+#+end_src
+
+#+begin_src C :results raw :noweb yes :cache yes :include <stdio.h>
+  <<square関数実装>>
   
+  int main(void) {
+
+    <<入力配列>>
+
+    /* 2乗の計算結果で更新する。*/
+    for(int i = 0; i < sizeof(array)/sizeof(int); i++) {
+      array[i] = square(array[i]);
+    }
+
+    /* 計算結果を確認する。*/
+    for(int i = 0; i < sizeof(array)/sizeof(int); i++) {
+      printf("array[%d] = %3d\n", i, array[i]);
+    }
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[6dc8949151da5df8fe1207404fe1297c5964c03e]:
+array[0] =   1
+array[1] =   4
+array[2] =   9
+array[3] =  16
+array[4] =  25
+array[5] =  36
+array[6] =  49
+array[7] =  64
+array[8] =  81
+array[9] = 100
+
+**** 結果確認部分の関数化
+
+まずは、思いつくままに書いてみる。
+
+#+name: print_results
+#+begin_src C
+  #include <stdio.h>
+
+  void print_results(int array[], size_t size) {
+    for(int i = 0; i < size; i++) {
+      printf("array[%d] = %3d\n", i, array[i]);
+    }
+  }
+#+end_src
+
+#+RESULTS: print_results
+
+#+begin_src C :results raw :noweb yes :cache yes :include <stdio.h>
   
+  <<square関数実装>>
+  <<print_results>>
+
+  int main(void) {
+
+    <<入力配列>>
+
+    /* 2乗の計算結果で更新する。*/
+    for(int i = 0; i < sizeof(array)/sizeof(int); i++) {
+      array[i] = square(array[i]);
+    }
+
+    /* 計算結果を確認する。*/
+    print_results(array, sizeof(array)/sizeof(int));
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[adcdad4d9dea7048434e035324d746dd98e700fd]:
+array[0] =   1
+array[1] =   4
+array[2] =   9
+array[3] =  16
+array[4] =  25
+array[5] =  36
+array[6] =  49
+array[7] =  64
+array[8] =  81
+array[9] = 100
+
+[[print_results]]は、配列の識別子まで、実装側で入れ込んでいる。これを外部から指定可能にする方法は
+あるだろうか。より汎用的なことが可能かを考えてみよ。
+
+識別子を文字列として受取り出力を変更する程度しか行えなさそうである。
