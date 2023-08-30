@@ -1,11 +1,12 @@
 #+title: C言語練習
 #+startup: content
+#+options: todo:nil
 
 学習の流れ
 
 * 最初のプログラムと仕様情報
 
-** C言語開発環境の確認
+** TODO C言語開発環境の確認
 
 #+begin_example
 $ gcc --version
@@ -15,19 +16,22 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #+end_example
 
-:対応を考える:
+#+begin_comment
 $の読み方をどのように説明すればよいだろうか。
 所持しているRustの書籍を参考にしてみよう。
-:END:
+#+end_comment
 
 ** 最初のプログラム「Hello, world!」
 
-最初に書くプログラムの定番であるハローワールドを作成してみましょう。
+最初に書くプログラムの定番であるハローワールドを作成し、実行してみましょう。
+
+*** DONE helloworld.cの作成
+
 適当なテキストエディタを使ってhelloworld.cを作成して下さい。中身は以下のとおりです。
 
 #+name: helloworld
 #+caption: 最初のソースコード helloworld.c
-#+begin_src C :exports both :cache yes :results output :tangle helloworld.c
+#+begin_src C :exports code :results output :tangle helloworld.c :cache yes
 #include <stdio.h>
 
 int main(void)
@@ -37,20 +41,23 @@ int main(void)
 }
 #+end_src
 
-#+RESULTS[ab8f40efed30bfd8dee783569b3a21849bbb4de2]: helloworld
+#+RESULTS[4741b105d0ea1c236aa0ab8a97c2697f2d670e55]: helloworld
 : Hello, world!
 
 #+RESULTS:
 
 プログラムを記述したこの様なファイルをソースコードといいます。
-作成できたら、コマンドとして実行できるファイルに変換します。
+
+*** helloworld.cのビルド
+
+ソースコードが作成できたら、ビルドを行いコマンドとして実行できるファイルに変換します。
 
 #+begin_example
 $ gcc helloworld.c 
 #+end_example
 
 入力ミスがある場合は何らかのエラーメッセージが出力されます。
-その場合は、[[helloworld.c]]のソースコードと自身で入力したソースコードをよく比較してみてください。
+その場合は、[[helloworld]]のソースコードと自身で入力したソースコードをよく比較してみてください。
 
   - スペースは半角を使用する。
 
