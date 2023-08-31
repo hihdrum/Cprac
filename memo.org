@@ -46,14 +46,14 @@ int main(void)
 
 #+RESULTS:
 
-プログラムを記述したこの様なファイルをソースコードといいます。
+プログラム(ソースコード)を記述したこの様なファイルをソースファイルと言います。
 
-*** helloworld.cのビルド
+*** DONE helloworld.cのビルド
 
-ソースコードが作成できたら、ビルドを行いコマンドとして実行できるファイルに変換します。
+ソースファイルが作成できたら、ビルドを行いコマンドとして実行できるファイルに変換します。
 
 #+begin_example
-$ gcc helloworld.c 
+gcc helloworld.c
 #+end_example
 
 入力ミスがある場合は何らかのエラーメッセージが出力されます。
@@ -65,7 +65,7 @@ $ gcc helloworld.c
 a.outというファイルができているので、以下の様に実行します。
 
 #+begin_example
-$ ./a.out 
+./a.out
 Hello, world!
 #+end_example
 
@@ -73,12 +73,12 @@ Hello, world!
 a.out以外のファイル名にしたい場合は、はオプション-oを使用します。
 
 #+begin_example
-$ gcc helloworld.c -o helloworld
-$ ls helloworld
+gcc helloworld.c -o helloworld
+ls helloworld
 helloworld
 #+end_example
 
-** 実行ファイルができるまでの各工程
+** TODO 実行ファイルができるまでの各工程
 
 テキストファイルから実行可能なファイルになるまでは以下のように
 複数の工程に分かれています。
@@ -191,11 +191,16 @@ C17の情報に置き換える。
 org-modeのリンク機能も活用したい。
 :END:
 
-** プログラムの終了状態
+** プログラムの終了ステータスの取得
 
-シェルは最後に実行したプログラムの終了状態を~$?~に持っており、echoで値を確認することができます。
-true, falseコマンドを例に$?の実行結果を確認してみましょう。
+シェルは最後に実行したプログラムの終了ステータスを~$?~に持っており、echoコマンドで値を確認することができます。
+この節では自作したプログラムの終了ステータスを確認してみます。
 
+自作のプログラムの終了ステータスについて確認する前に、幾つかの既存コマンドの終了ステータスを確認します。
+
+*** DONE 既存コマンドの終了ステータスの確認
+
+true, falseコマンドを例に~$?~の実行結果を確認してみましょう。
 まずは、以下のコマンドでtrueとfalseのマニュアルを確認して下さい。
 
 #+begin_example
@@ -204,70 +209,115 @@ $ man false
 #+end_example
 
 マニュアルの関連項目には完全なマニュアルはTexinfoマニュアルとして整備されていると記載があります。
-以下のコマンドでinfoを確認して下さい。
+以下のコマンドで確認してみてください。
 
 #+begin_example
 $ info true
 $ info false
 #+end_example
 
-実際にtrue, falseコマンドを実行しマニュアルに記載された通りの終了ステータスが得られることを
-確認してみて下さい。
+infoによるとtrueは、成功を意味する0を返し、falseは失敗を意味する1を返すと記載されています。
 
-#+begin_src shell
-  true; echo $?
+実際にtrue, falseコマンドを実行しマニュアルに記載された通りの終了ステータスが得られることを
+確認してみます。
+
+#+name: trueの終了ステータス
+#+begin_src shell :exports both :cache yes
+true; echo $?
 #+end_src
 
-#+begin_example
-$ true; echo $?
-0
-#+end_example
+結果は以下のようになります。
 
-#+begin_example
-$ false; echo $?
-1
-#+end_example
+#+RESULTS[f52d9371b0303e5998357ceb591fab583f49f0c3]: trueの終了ステータス
+: 0
 
+falseコマンドも同じように確認してみます。
+
+#+name: falseの終了ステータス
+#+begin_src shell :exports both :cache yes
+false; echo $?
+#+end_src
+
+#+RESULTS[2e6f0f8c253db5b8e94c4d534f74797c1a9bc1c0]: falseの終了ステータス
+: 1
+
+**** DONE 練習 : grepコマンドの終了ステータス確認
 
 tureやfalseの他にgrepコマンドなども成功と失敗を返しています。
 grepのマニュアルを参照し、どの様な終了ステータスを返すのかを確認してみて下さい。
 
-$ man grep
+#+begin_example
+man grep
+#+end_example
 
 マニュアルには選択行が見つかった場合は0, 見つからなかった場合は1と記載があります。
 見つかる場合と見つからない場合の2ケースを実際に試し終了ステータスを確認して下さい。
 
-$ echo abc | grep a; echo $?
-abc
-0
+#+name: grep終了ステータス正常
+#+begin_src shell :exports both :results output :cache yes
+echo abc | grep a; echo $?
+#+end_src
 
-$ echo abc | grep d; echo $?
-1
+#+RESULTS[6d62498256c5294bb42f300ac4d0f33255506e9e]: grep終了ステータス正常
+: abc
+: 0
+
+#+name: grep終了ステータス失敗
+#+begin_src shell :exports both :results output :cache yes
+echo abc | grep d; echo $?
+#+end_src
+
+#+RESULTS[4f4d7dcc1952a6905f6921000bb3846ce4e3bcba]: grep終了ステータス失敗
+: 1
+
+*** STARTED 終了ステータスを返すだけの小さなプログラム
 
 C言語では、main関数の戻り値(return 0 の 0)がプログラムの終了ステータスとなります。
 
-** 終了ステータスを返すだけの小さなプログラム
 helloworld.cでは画面に文字列を出力(printf)するために、おまじない(#include <stdio.h>)を記述しました。
 実はこのおまじないは、画面出力(printf)を使用するために記述しています。プログラムの終了ステータスを返すだけの場合は、
 画面出力(printf)が不要なので、このおまじないを取り除くことができます。
 
 以下のreturn0.cを作成し実行させてみなさい。
 
-#+name: return0.c
-#+begin_src c
-int main(void)
-{
-  return 0;
-}
+#+name: return0
+#+begin_src c :exports code :tangle return0.c
+  int main(void) {
+    return 0;
+  }
 #+end_src
 
-#+result : return0.c
-$ gcc -Wall return0.c 
-$ ./a.out
-$ echo $?
-0
+#+name return0のビルドと動作確認
+#+begin_src shell
+  gcc -Wall return0.c
+  ./a.out
+  echo $?
+#+end_src
+
+#+RESULTS:
+: 0
 
 このプログラムは--helpや--versionのオプションを受け取れませんが、trueコマンドと同じですね。
+
+**** 練習 常に1を返すプログラムの作成と動作確認
+
+練習として、常に失敗の終了ステータス1を返すプログラムを作成し、動作を確認してみなさい。
+
+#+begin_src C :exports code :tangle return1.c
+  int main(void) {
+    return 1;
+  }
+#+end_src
+
+#+name: return1のビルドと動作確認
+#+begin_src shell
+  gcc -Wall return1.c
+  ./a.out
+  echo $?
+#+end_src
+
+#+RESULTS:
+: 1
 
 ** プログラム
 C言語の様な手続き型言語のプログラムは平たく言えば、逐一やること書いたものの並びと考えてよいです。
