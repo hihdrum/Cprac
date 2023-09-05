@@ -310,6 +310,7 @@ helloworld.cでは画面に文字列を出力(printf)するために、おまじ
 
 常に失敗の終了ステータス1を返すプログラムをmyfalse.c作成し、動作を確認してみなさい。
 
+#+caption: myfalse.c
 #+name: myfalse
 #+begin_src C :exports code :tangle myfalse.c
   int main(void) {
@@ -317,14 +318,14 @@ helloworld.cでは画面に文字列を出力(printf)するために、おまじ
   }
 #+end_src
 
-#+name: return1のビルドと動作確認
+#+name: myfalseのビルドと動作確認
 #+begin_src shell
   gcc -Wall myfalse.c
   ./a.out
   echo $?
 #+end_src
 
-#+RESULTS: return1のビルドと動作確認
+#+RESULTS: myfalseのビルドと動作確認
 : 1
 
 ** プログラム
@@ -789,14 +790,16 @@ x + 1 = 11
 x1 = 11
 
 *** 問題
-1. 常に失敗(0)を返す関数falseを作成し実際に使用してみよ。(false.c)
-2. float型の引数を受け取り、その値の2乗を返す関数square_floatを作成し、実際に使用してみよ。(square.c)
-3. float型の引数を受け取り、その値の3乗を返す関数cube_floatを作成し、実際に使用してみよ。(square.c)
-   作成にあたり、square_floatを利用せよ。
-4. float型の引数を受け取り、その値の4乗を返す関数quad_floatを作成し、実際に使用してみよ。(square.c)
-   作成にあたり、square_floatを利用せよ。
-6. 2つの整数の和を計算する関数addを作成し実際に使用してみよ。(add.c)
-5. Hello, world!と画面に出力する関数printHelloを作成しなさい。
+**** 常に失敗(0)を返す関数falseを作成し実際に使用してみよ。(false.c)
+**** float型の引数を受け取り、その値の2乗を返す関数square_floatを作成し、実際に使用してみよ。(square.c)
+**** float型の引数を受け取り、その値の3乗を返す関数cube_floatを作成し、実際に使用してみよ。(square.c)
+作成にあたり、square_floatを利用せよ。
+
+**** float型の引数を受け取り、その値の4乗を返す関数quad_floatを作成し、実際に使用してみよ。(square.c)
+作成にあたり、square_floatを利用せよ。
+
+**** 2つの整数の和を計算する関数addを作成し実際に使用してみよ。(add.c)
+**** Hello, world!と画面に出力する関数printHelloを作成しなさい。
 
 *** プロトタイプ宣言
 C言語ではファイルの先頭側で定義した関数1からファイルの後の方で定義した関数2を使用すると、
@@ -858,10 +861,23 @@ stdio.hの内容を含めるという意味になります。含めていたの�
 試しに#include <stdio.h>の行を削除すると、printfで「implicit declaration」が出ます。
 
 **** 問題
-1. Hello, world!と画面に出力するプログラムを作成しなさい。
-   出力にはprintf関数を使用せよ。
-2. 作成したプログラムから#include <stdio.h>を削除し暗黙の型宣言の警告が出力されるか試してみなさい。(hello_imp.c)
-3. stdio.hからprintfに関するプロトタイプ宣言を抜き出すとどうなるだろうか。試してみなさい。(hello_prot.c)
+***** Hello, world!と画面に出力するプログラムを作成しなさい。
+出力にはprintf関数を使用せよ。
+
+***** STARTED 作成したプログラムから#include <stdio.h>を削除し暗黙の型宣言の警告が出力されるか試してみなさい。(hello_imp.c)
+
+#+begin_src C :tangle hello_imp.c
+  int main(void) {
+    printf("Hello, world!\n");
+    return 0;
+  }
+#+end_src
+
+#+begin_src shell
+  gcc -Wall hello_imp.c
+#+end_src
+
+***** stdio.hからprintfに関するプロトタイプ宣言を抜き出すとどうなるだろうか。試してみなさい。(hello_prot.c)
 
 ** モジュール, ライブラリ
 
@@ -1710,8 +1726,98 @@ x |  1  2  3  4  5  6  7  8  9
         #+end_example
 
 *** 福利計算
+**** 福利
 
 元金,年利,年数を指定して各年毎の元金を表示させてみよ。
+元金100万円、年利3%を想定し、得た利益はそのまま次年の元金にする。
+10年後にいくらになるかを計算せよ。
+
+| moto | rieki |
+|  100 |   103 |
+|  203 |       |
+
+#+name: hukuri
+#+begin_src C :cache yes :tangle hukuri.c
+  #include <stdio.h>
+
+  int main(void) {
+
+    double gankin = 100;
+    double nenri = 0.03;
+    int nen = 10;
+
+    for(int i = 0; i < nen; i++) {
+      double rieki = gankin * nenri;
+      printf("%d, %f, %f\n", i + 1, gankin, rieki);
+
+      gankin += rieki;
+    }
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[5b16a43710b384b6a21d4a65180e1b2459667687]: hukuri
+|  1 |      100.0 |      3.0 |
+|  2 |      103.0 |     3.09 |
+|  3 |     106.09 |   3.1827 |
+|  4 |   109.2727 | 3.278181 |
+|  5 | 112.550881 | 3.376526 |
+|  6 | 115.927407 | 3.477822 |
+|  7 |  119.40523 | 3.582157 |
+|  8 | 122.987387 | 3.689622 |
+|  9 | 126.677008 |  3.80031 |
+| 10 | 130.477318 |  3.91432 |
+
+**** 毎年, 福利
+
+上記の想定を少し変更し、毎年元金に100万円を加えた場合を考えてみよ。
+
+#+name: hukuri2
+#+begin_src C :cache yes :tangle hukuri2.c
+  #include <stdio.h>
+
+  int main(void) {
+
+    double gankin = 100;
+    double mai = 100;
+    double nenri = 0.03;
+    int nen = 10;
+
+    for(int i = 0; i < nen; i++) {
+      double rieki = gankin * nenri;
+      printf("%d, %f, %f\n", i + 1, gankin, rieki);
+
+      gankin += mai + rieki;
+    }
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[d82b297e8b366e7c68ca6b864ae74f52c672c2bf]: hukuri2
+|  1 |       100.0 |       3.0 |
+|  2 |       203.0 |      6.09 |
+|  3 |      309.09 |    9.2727 |
+|  4 |    418.3627 | 12.550881 |
+|  5 |  530.913581 | 15.927407 |
+|  6 |  646.840988 |  19.40523 |
+|  7 |  766.246218 | 22.987387 |
+|  8 |  889.233605 | 26.677008 |
+|  9 | 1015.910613 | 30.477318 |
+| 10 | 1146.387931 | 34.391638 |
+
+**** 手軽に複数にシミュレーションが行えるようにしてみよ。
+
+例
+- 関数化
+- コマンドとして実行できるようにする。
+
+**** 出力結果を他のプログラムで利用する例を考えてみよ。
+
+例
+
+- 元金を変更したパターンの結果をグラフに表示させてみる。
 
 *** 入力バイトカウントアップ
 
