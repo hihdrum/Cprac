@@ -791,14 +791,118 @@ x1 = 11
 
 *** 問題
 **** 常に失敗(0)を返す関数falseを作成し実際に使用してみよ。(false.c)
-**** float型の引数を受け取り、その値の2乗を返す関数square_floatを作成し、実際に使用してみよ。(square.c)
-**** float型の引数を受け取り、その値の3乗を返す関数cube_floatを作成し、実際に使用してみよ。(square.c)
+
+#+begin_src C :tangle false.c
+  int main(void)
+  {
+    return 1;
+  }
+#+end_src
+
+#+name: falseの実行
+#+begin_src shell
+  gcc -Wall false.c -o false
+  ./false; echo $?
+#+end_src
+
+#+RESULTS: falseの実行
+: 1
+
+**** float型の引数を受け取り、その値の2乗を返す関数square_floatを作成し、実際に使用してみよ。
+
+#+name: square_floatの利用
+#+begin_src C :tangle use_square.c
+  float square_float(float x) {
+    return x * x;
+  }
+
+  int main(void) {
+    float x = 2.0;
+
+    printf("square_float(%f) = %f\n", x, square_float(x));
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS: square_floatの利用
+: square_float(2.000000) = 4.000000
+
+**** float型の引数を受け取り、その値の3乗を返す関数cube_floatを作成し、実際に使用してみよ。(cube.c)
+
 作成にあたり、square_floatを利用せよ。
 
-**** float型の引数を受け取り、その値の4乗を返す関数quad_floatを作成し、実際に使用してみよ。(square.c)
+#+name: cube_floatの利用
+#+begin_src C :tangle use_cube.c
+  float square_float(float x) {
+    return x * x;
+  }
+
+  float cube_float(float x) {
+    return x * square_float(x);
+  }
+
+  int main(void) {
+    float x = 2.0;
+
+    printf("cube_float(%f) = %f\n", x, cube_float(x));
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: cube_float(2.000000) = 8.000000
+
+**** float型の引数を受け取り、その値の4乗を返す関数quad_floatを作成し、実際に使用してみよ。
+
 作成にあたり、square_floatを利用せよ。
+
+#+name: quad_floatの利用
+#+begin_src C :tangle use_quad.c
+  float square_float(float x) {
+    return x * x;
+  }
+
+  float quad_float(float x) {
+    return square_float(square_float(x));
+  }
+
+  int main(void) {
+    float x = 2.0;
+
+    printf("quad_float(%f) = %f\n", x, quad_float(x));
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS: quad_floatの利用
+: quad_float(2.000000) = 16.000000
 
 **** 2つの整数の和を計算する関数addを作成し実際に使用してみよ。(add.c)
+
+#+name: addの利用
+#+begin_src C :tangle add.c
+  #include <stdio.h>
+
+  int add(int x, int y) {
+    return x + y;
+  }
+
+  int main(void) {
+    int x = 5;
+    int y = 10;
+
+    printf("%d + %d = %d\n", x, y, add(x, y));
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS: addの利用
+: 5 + 10 = 15
+
 **** Hello, world!と画面に出力する関数printHelloを作成しなさい。
 
 *** プロトタイプ宣言
