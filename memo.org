@@ -790,24 +790,6 @@ x + 1 = 11
 x1 = 11
 
 *** 問題
-**** 常に失敗(0)を返す関数falseを作成し実際に使用してみよ。(false.c)
-
-#+begin_src C :tangle false.c
-  int main(void)
-  {
-    return 1;
-  }
-#+end_src
-
-#+name: falseの実行
-#+begin_src shell
-  gcc -Wall false.c -o false
-  ./false; echo $?
-#+end_src
-
-#+RESULTS: falseの実行
-: 1
-
 **** float型の引数を受け取り、その値の2乗を返す関数square_floatを作成し、実際に使用してみよ。
 
 #+name: square_floatの利用
