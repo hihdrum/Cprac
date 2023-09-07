@@ -306,7 +306,7 @@ helloworld.cでは画面に文字列を出力(printf)するために、おまじ
 
 このプログラムは--helpや--versionのオプションを受け取れませんが、trueコマンドと同じです。
 
-**** 練習 常に1を返すプログラムの作成と動作確認
+**** DONE 練習 常に1を返すプログラムの作成と動作確認
 
 常に失敗の終了ステータス1を返すプログラムをmyfalse.c作成し、動作を確認してみなさい。
 
@@ -374,15 +374,14 @@ C言語は素直に上から下に順次実行されてきますので、処理�
 
 #+name: 順次実行
 #+begin_src C :exports both :results output :tangle junn.c :cache yes
-#include <stdio.h>
+  #include <stdio.h>
 
-int main(void)
-{
-  printf("最初\n");
-  printf("次\n");
+  int main(void) {
+    printf("最初\n");
+    printf("次\n");
 
-  return 0;
-}
+    return 0;
+  }
 #+end_src
 
 実行してみると、記述した順序の通り、"最初"が画面に出力され、次に"次"が出力されます。
@@ -443,89 +442,125 @@ int main(void)
          実行権が付与されているかを確認してみよ。
 
 * 変数
-C言語では変数を使用することができます。
-変数には名前(識別子)を付けることができます。このおかげで、保存した値を名前でアクセス(読み取り、書込み)することができます。
-変数は、計算結果を一時的に保存するメモの様な物をイメージすればよいでしょう。
+
+変数は、計算結果を一時的に保存する際のメモの様な物です。
+変数には名前(識別子)を付けることができます。
+名前があるおかげで、名前を指定して保存している値を読み込んだり、書き込んだりすることができます。
 
 ** 変数の宣言
 変数の使用には予め以下の様に宣言する必要があります。
 
+#+begin_src C
   保持したい型の情報 名前(識別子) = 初期値;
-　　　　　　　　int  x          = 10;    /* int型変数のxの宣言 初期化 */
+#+end_src
+
+#+name: 変数の宣言例
+#+begin_src C
+  int  x = 10;    /* int型変数のxの宣言 初期化 */
+#+end_src
 
 初期値を指定せずに宣言することもできます。
 
+#+begin_src C
   保持したい型の情報 名前(識別子);
-             int  x;    /* int型変数 x の宣言 */
-               x  = 10; /* 代入 */
+#+end_src
+
+#+begin_src C
+  int  x;  /* int型変数 x の宣言 */
+  x  = 10; /* 代入 */
+#+end_src
+
 
 宣言例は以下となります。
 
-  int weeknum = 7;  /* 一週間の日数 */
-  double pi = 3.14; /* 円周率(小数点2桁まで) */
-  char good = 'A';  /* 評価 */ /* 文字を記述する場合はクォート(')で囲見ます。*/
+#+begin_src C
+  int weeknum = 7;    /* 一週間の日数 */
+  double pi   = 3.14; /* 円周率(小数点2桁まで) */
+  char good   = 'A';  /* 評価 */ /* 文字を記述する場合はクォート(')で囲見ます。*/
+#+end_src
 
 C言語は型を意識する言語になっています。
 型の情報はメモリ領域の確保や、異なる型の演算をユーザーが誤って記述している場合などのチェックに使われています。
 型や変数が使用するメモリ領域のサイズはsizeof(型)やsizeof(変数名)で取得できます。結果はバイト単位です。
 
-*** 整数型 int
+*** DONE 整数型 int
+
 1週間の日数を保持するint型の変数を使用する以下のプログラムを作成し、実行してみなさい。
 
-#+NAME: var_int.c
-#+BEGIN_SRC C
-#include <stdio.h>
+#+name: int型変数の例
+#+begin_src C :results output :tangle use_int.c
+  #include <stdio.h>
 
-int main(void)
-{
-  int weeknum = 7; /* 一週間の日数 */
-  printf("weeknum = %d\n", weeknum);
+  int main(void) {
 
-  printf("sizeof(int) = %zd\n", sizeof(int));
-  printf("sizeof(weeknum) = %zd\n", sizeof(weeknum));
+    int weeknum = 7; /* 一週間の日数 */
+    printf("weeknum = %d\n", weeknum);
 
-  return 0;
-}
-#+END_SRC
+    printf("sizeof(int) = %zd\n", sizeof(int));
+    printf("sizeof(weeknum) = %zd\n", sizeof(weeknum));
 
-#+RESULT: var_int.c
-$ gcc -Wall var_int.c -o var_int
-$ ./var_int 
-weeknum = 7
-sizeof(int) = 4
-sizeof(weeknum) = 4
+    return 0;
+  }
+#+end_src
 
-**** 問題
-1. var_int.cは初期値を指定した変数の宣言方法であった。初期値を指定しない場合、変数の値に何か入っているかを確認するプログラムを
-   var_int.cを参考に作成しなさい。
+#+RESULTS: int型変数の例
+: weeknum = 7
+: sizeof(int) = 4
+: sizeof(weeknum) = 4
 
-2. int型には他にshort int, long intなどの型がある。これらの型の変数について、サイズを確認してみよ。
+#+name: int型変数使用の実行例
+#+begin_src shell :results output
+  gcc -Wall use_int.c -o use_int
+  ./use_int
+#+end_src
+
+#+RESULTS: int型変数使用の実行例
+: weeknum = 7
+: sizeof(int) = 4
+: sizeof(weeknum) = 4
+
+**** TODO 問題1
+
+use_int.cは初期値を指定した変数の宣言方法であった。
+初期値を指定しない場合、変数の値に何か入っているかを確認するプログラムをuse_int.cを参考に作成しなさい。
+
+**** 問題2
+
+int型には他にshort int, long intなどの型がある。これらの型の変数について、サイズを確認してみよ。
 
 *** 文字型 char
+
 文字を保持するchar型の変数を使用する以下のプログラムを作成し、実行してみなさい。
 
-#+NAME: var_char.c
-#+BEGIN_SRC C
-#include <stdio.h>
+#+name: char型変数の例
+#+begin_src C :results output :tangle use_char.c
+  #include <stdio.h>
 
-int main(void)
-{
-  char a = 'a';
-  printf("a = %c\n", a);
+  int main(void) {
+    char a = 'a';
+    printf("a = %c\n", a);
 
-  printf("sizeof(char) = %zd\n", sizeof(char));
-  printf("sizeof(a) = %zd\n", sizeof(a));
+    printf("sizeof(char) = %zd\n", sizeof(char));
+    printf("sizeof(a) = %zd\n", sizeof(a));
 
-  return 0;
-}
-#+END_SRC
+    return 0;
+  }
+#+end_src
 
-#+RESULT: var_char.c
-$ gcc -Wall var_char.c -o var_char
-$ ./var_char 
-a = a
-sizeof(char) = 1
-sizeof(a) = 1
+#+RESULTS: char型変数の例
+: a = a
+: sizeof(char) = 1
+: sizeof(a) = 1
+
+#+begin_src shell :results output
+  gcc -Wall use_char.c -o use_char
+  ./use_char
+#+end_src
+
+#+RESULTS:
+: a = a
+: sizeof(char) = 1
+: sizeof(a) = 1
 
 文字型という型ですが、sizeof(char)の結果を見るようにサイズは1バイトです。
 そのため、多バイト文字を扱おうとするとコンパイル時に警告が出ます。
@@ -2217,6 +2252,36 @@ struct タグ名
 * デバッガ(GDB)
 * 総合
 ** 積を計算するプログラムを和で実装しなさい。
+
+#+begin_src C
+  int mul(int x, int y) {
+    int sum = 0;
+    for(int i = 0; i < y; i++) {
+      sum += x;
+    }
+
+    return sum;
+  }
+
+  int main(void) {
+    int x = 3;
+    int y = 7;
+    printf("%d * %d = %d\n", x, y, mul(x, y));
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS:
+: 3 * 7 = 21
+
+実装後以下を考えてみなさい。
+
+- xまたはyが0の場合、積の結果は0となる。この場合は、繰り返しによる和の実行は不要である。
+  作成したプログラムにこの考えが入っていない場合、実装してみよ。
+- xが1の場合、積の結果はyである。また、yが1の場合、積の結果はxである。
+  作成したプログラムにこの考えが入っていない場合、実装してみよ。
+
 ** 商を計算するプログラムを差で実装しなさい。
 ** 余り(剰余)を計算するプログラムを差で実装しなさい。
 ** 商と余りを得るプログラムを差で実装しなさい。
