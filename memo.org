@@ -11,6 +11,9 @@
 
 この繰り返しがプログラムへの理解を養うだろう。
 
+- 考えをプログラムとして記述する。
+
+
 * 最初のプログラムと仕様情報
 
 ** TODO C言語開発環境の確認
@@ -391,35 +394,131 @@ C言語は素直に上から下に順次実行されてきますので、処理�
 : 次
 
 ** 問題
+*** 計算結果を終了ステータスとして返すプログラム(prac02.c)
 
-   1. 1 + 2 の計算結果を終了ステータスとして返すプログラムを作成しなさい。(prac02.c)
-   2. 1から10までの整数の和を終了ステータスとして返すプログラムを作成しなさい。(returnWa1to10.c)
-      (難しく考えず、電卓を利用するように考えてみよ。)
-   3. gccのオプション-Wallについてマニュアルを調べなさい。
-      警告を出力してくれるので積極的な利用をおすすめします。
-   4. 画面に以下のような文字列を出力するプログラムhello2を作成しなさい。
-      #+begin_example
-      hello
-      hello
-      #+end_example
-   5. 画面に以下のような文字列を出力するプログラムhello3を作成しなさい。
-      #+begin_src
-      hello
-       hello
-        hello
-      #+end_src
-   6. 画面に以下のような文字列を出力するプログラムtreeを作成しなさい。
+1 + 2 の計算結果を終了ステータスとして返すプログラムを作成しなさい。
+プログラムで計算を行わせるようにし、計算結果の3をプログラム中に埋め込まないようにせよ。
 
-      #+begin_example
-          *
-         * *
-        *   *
-       *     *
-      *********
-          *
-          *
-      #+end_example
-   9. (質問からの問題)
+#+begin_src C :tangle prac02.c
+  int main(void) {
+    return 1 + 2;
+  }
+#+end_src
+
+#+name: prac02実行結果
+#+begin_src shell
+  gcc -Wall prac02.c -o prac02
+  ./prac02; echo $?
+#+end_src
+
+#+RESULTS: prac02実行結果
+: 3
+
+*** 整数の和を終了ステータスとして返すプログラム(returnWa1to10.c)
+
+1から10までの整数の和を終了ステータスとして返すプログラムを作成しなさい。
+現状、変数、条件文、繰り返し、再帰などプログラミングに関することを何も説明していないが、
+プログラムを電卓の延長として考えてみよ。足し算を行わせることができれば実装できるはずである。
+
+#+begin_src C :tangle returnWa1to10.c
+  int main(void) {
+    return 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10;
+  }
+#+end_src
+
+#+name: returnWa1to10の実行結果
+#+begin_src shell
+  gcc -Wall returnWa1to10.c -o returnWa1to10
+  ./returnWa1to10; echo $?
+#+end_src
+
+#+RESULTS: returnWa1to10の実行結果
+: 55
+
+*** gccのマニュアル-Wallオプション
+
+gccの-Wallオプションについてマニュアルを調べてみよ。
+このオプションは警告を出力してくれるので積極的な利用を進める。
+
+#+begin_src shell
+  man gcc
+#+end_src
+
+gccの-Wallオプションについてinfoを調べてみよ。
+
+#+begin_src shell
+  info gcc
+#+end_src
+
+*** 画面への文字列の出力
+
+画面に文字列を出力するプログラムを作成し、文字列が上下左右のどこからどこに向かって出力されていくのかを
+見てみよ。
+
+画面に以下のような文字列を出力するプログラムhello2を作成しなさい。
+
+#+begin_example
+hello
+hello
+#+end_example
+
+#+name: hello2_01
+#+begin_src C :results output :tangle hello2.c :cache yes
+  #include <stdio.h>
+
+  int main(void) {
+    printf("hello\n");
+    printf("hello\n");
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[d1606336989156bcd63ffd8785d2764a71ff3320]: hello2_01
+: hello
+: hello
+
+別の書き方はあるだろうか。
+
+#+name: hello2_02
+#+begin_src C :results output :tangle hello2.c :cache yes
+  #include <stdio.h>
+
+  int main(void) {
+    printf("hello\nhello\n");
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[f94146d71f6463cc01a3e0b2d36a1c74aff73e23]: hello2_02
+: hello
+: hello
+
+画面に以下のような文字列を出力するプログラムhello3を作成しなさい。
+
+
+#+begin_src
+hello
+ hello
+  hello
+#+end_src
+
+
+画面に以下のような文字列を出力するプログラムtreeを作成しなさい。
+
+#+begin_example
+    *
+   * *
+  *   *
+ *     *
+*********
+    *
+    *
+#+end_example
+
+
+***   9. (質問からの問題)
       シェルスクリプトなどを実行可能にするには、chmodコマンドで実行権を付与するが、
       gccで実行ファイルを実行した場合は最初から実行可能になっている。
       なぜですか?
