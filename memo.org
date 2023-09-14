@@ -2938,6 +2938,14 @@ array[9] = 100
 
 ** 配列とアドレス
 
+配列は指定した型の要素が宣言した個数分メモリ領域に連続して確保されるというデータ構造である。
+このことを利用し、同じメモリ領域を要素数の配分がおこなる全体数が同じ領域としてアクセスしてみよ。
+
+#+begin_comment
+何書いているかわからないので、文章を直す。
+#+end_comment
+
+
 #+begin_src C :results output
   #include <stdio.h>
 
@@ -2966,221 +2974,14 @@ array[9] = 100
       printf("%p : ap[%d] = %3d\n", &ap[i], i, ap[i]);
     }
 
-    #if 0
     /* 5行20列の配列として見た場合 */
-    int *ap2 = (int [5])a2;
+    int (*ap2)[20] = (int (*)[20])a2;
     for(int i = 0; i < 5; i ++) {
       for(int j = 0; j < 20; j++) {
-        /* 修正中 */
-        printf("%p : ap2[%d][%d] = %3d\n", &ap2[i][j], i, j, ap2[i][j]);
+        printf("%p : ap2[%d][%d] = %d\n", &ap2[i][j],i, j, ap2[i][j]);
       }
     }
-    #endif
+
   }
 #+end_src
-
-#+RESULTS:
-#+begin_example
-0x7ffcda285bf0 : a2[0][0] =   0
-0x7ffcda285bf4 : a2[0][1] =   1
-0x7ffcda285bf8 : a2[0][2] =   2
-0x7ffcda285bfc : a2[0][3] =   3
-0x7ffcda285c00 : a2[0][4] =   4
-0x7ffcda285c04 : a2[0][5] =   5
-0x7ffcda285c08 : a2[0][6] =   6
-0x7ffcda285c0c : a2[0][7] =   7
-0x7ffcda285c10 : a2[0][8] =   8
-0x7ffcda285c14 : a2[0][9] =   9
-0x7ffcda285c18 : a2[1][0] =  10
-0x7ffcda285c1c : a2[1][1] =  11
-0x7ffcda285c20 : a2[1][2] =  12
-0x7ffcda285c24 : a2[1][3] =  13
-0x7ffcda285c28 : a2[1][4] =  14
-0x7ffcda285c2c : a2[1][5] =  15
-0x7ffcda285c30 : a2[1][6] =  16
-0x7ffcda285c34 : a2[1][7] =  17
-0x7ffcda285c38 : a2[1][8] =  18
-0x7ffcda285c3c : a2[1][9] =  19
-0x7ffcda285c40 : a2[2][0] =  20
-0x7ffcda285c44 : a2[2][1] =  21
-0x7ffcda285c48 : a2[2][2] =  22
-0x7ffcda285c4c : a2[2][3] =  23
-0x7ffcda285c50 : a2[2][4] =  24
-0x7ffcda285c54 : a2[2][5] =  25
-0x7ffcda285c58 : a2[2][6] =  26
-0x7ffcda285c5c : a2[2][7] =  27
-0x7ffcda285c60 : a2[2][8] =  28
-0x7ffcda285c64 : a2[2][9] =  29
-0x7ffcda285c68 : a2[3][0] =  30
-0x7ffcda285c6c : a2[3][1] =  31
-0x7ffcda285c70 : a2[3][2] =  32
-0x7ffcda285c74 : a2[3][3] =  33
-0x7ffcda285c78 : a2[3][4] =  34
-0x7ffcda285c7c : a2[3][5] =  35
-0x7ffcda285c80 : a2[3][6] =  36
-0x7ffcda285c84 : a2[3][7] =  37
-0x7ffcda285c88 : a2[3][8] =  38
-0x7ffcda285c8c : a2[3][9] =  39
-0x7ffcda285c90 : a2[4][0] =  40
-0x7ffcda285c94 : a2[4][1] =  41
-0x7ffcda285c98 : a2[4][2] =  42
-0x7ffcda285c9c : a2[4][3] =  43
-0x7ffcda285ca0 : a2[4][4] =  44
-0x7ffcda285ca4 : a2[4][5] =  45
-0x7ffcda285ca8 : a2[4][6] =  46
-0x7ffcda285cac : a2[4][7] =  47
-0x7ffcda285cb0 : a2[4][8] =  48
-0x7ffcda285cb4 : a2[4][9] =  49
-0x7ffcda285cb8 : a2[5][0] =  50
-0x7ffcda285cbc : a2[5][1] =  51
-0x7ffcda285cc0 : a2[5][2] =  52
-0x7ffcda285cc4 : a2[5][3] =  53
-0x7ffcda285cc8 : a2[5][4] =  54
-0x7ffcda285ccc : a2[5][5] =  55
-0x7ffcda285cd0 : a2[5][6] =  56
-0x7ffcda285cd4 : a2[5][7] =  57
-0x7ffcda285cd8 : a2[5][8] =  58
-0x7ffcda285cdc : a2[5][9] =  59
-0x7ffcda285ce0 : a2[6][0] =  60
-0x7ffcda285ce4 : a2[6][1] =  61
-0x7ffcda285ce8 : a2[6][2] =  62
-0x7ffcda285cec : a2[6][3] =  63
-0x7ffcda285cf0 : a2[6][4] =  64
-0x7ffcda285cf4 : a2[6][5] =  65
-0x7ffcda285cf8 : a2[6][6] =  66
-0x7ffcda285cfc : a2[6][7] =  67
-0x7ffcda285d00 : a2[6][8] =  68
-0x7ffcda285d04 : a2[6][9] =  69
-0x7ffcda285d08 : a2[7][0] =  70
-0x7ffcda285d0c : a2[7][1] =  71
-0x7ffcda285d10 : a2[7][2] =  72
-0x7ffcda285d14 : a2[7][3] =  73
-0x7ffcda285d18 : a2[7][4] =  74
-0x7ffcda285d1c : a2[7][5] =  75
-0x7ffcda285d20 : a2[7][6] =  76
-0x7ffcda285d24 : a2[7][7] =  77
-0x7ffcda285d28 : a2[7][8] =  78
-0x7ffcda285d2c : a2[7][9] =  79
-0x7ffcda285d30 : a2[8][0] =  80
-0x7ffcda285d34 : a2[8][1] =  81
-0x7ffcda285d38 : a2[8][2] =  82
-0x7ffcda285d3c : a2[8][3] =  83
-0x7ffcda285d40 : a2[8][4] =  84
-0x7ffcda285d44 : a2[8][5] =  85
-0x7ffcda285d48 : a2[8][6] =  86
-0x7ffcda285d4c : a2[8][7] =  87
-0x7ffcda285d50 : a2[8][8] =  88
-0x7ffcda285d54 : a2[8][9] =  89
-0x7ffcda285d58 : a2[9][0] =  90
-0x7ffcda285d5c : a2[9][1] =  91
-0x7ffcda285d60 : a2[9][2] =  92
-0x7ffcda285d64 : a2[9][3] =  93
-0x7ffcda285d68 : a2[9][4] =  94
-0x7ffcda285d6c : a2[9][5] =  95
-0x7ffcda285d70 : a2[9][6] =  96
-0x7ffcda285d74 : a2[9][7] =  97
-0x7ffcda285d78 : a2[9][8] =  98
-0x7ffcda285d7c : a2[9][9] =  99
-0x7ffcda285bf0 : ap[0] =   0
-0x7ffcda285bf4 : ap[1] =   1
-0x7ffcda285bf8 : ap[2] =   2
-0x7ffcda285bfc : ap[3] =   3
-0x7ffcda285c00 : ap[4] =   4
-0x7ffcda285c04 : ap[5] =   5
-0x7ffcda285c08 : ap[6] =   6
-0x7ffcda285c0c : ap[7] =   7
-0x7ffcda285c10 : ap[8] =   8
-0x7ffcda285c14 : ap[9] =   9
-0x7ffcda285c18 : ap[10] =  10
-0x7ffcda285c1c : ap[11] =  11
-0x7ffcda285c20 : ap[12] =  12
-0x7ffcda285c24 : ap[13] =  13
-0x7ffcda285c28 : ap[14] =  14
-0x7ffcda285c2c : ap[15] =  15
-0x7ffcda285c30 : ap[16] =  16
-0x7ffcda285c34 : ap[17] =  17
-0x7ffcda285c38 : ap[18] =  18
-0x7ffcda285c3c : ap[19] =  19
-0x7ffcda285c40 : ap[20] =  20
-0x7ffcda285c44 : ap[21] =  21
-0x7ffcda285c48 : ap[22] =  22
-0x7ffcda285c4c : ap[23] =  23
-0x7ffcda285c50 : ap[24] =  24
-0x7ffcda285c54 : ap[25] =  25
-0x7ffcda285c58 : ap[26] =  26
-0x7ffcda285c5c : ap[27] =  27
-0x7ffcda285c60 : ap[28] =  28
-0x7ffcda285c64 : ap[29] =  29
-0x7ffcda285c68 : ap[30] =  30
-0x7ffcda285c6c : ap[31] =  31
-0x7ffcda285c70 : ap[32] =  32
-0x7ffcda285c74 : ap[33] =  33
-0x7ffcda285c78 : ap[34] =  34
-0x7ffcda285c7c : ap[35] =  35
-0x7ffcda285c80 : ap[36] =  36
-0x7ffcda285c84 : ap[37] =  37
-0x7ffcda285c88 : ap[38] =  38
-0x7ffcda285c8c : ap[39] =  39
-0x7ffcda285c90 : ap[40] =  40
-0x7ffcda285c94 : ap[41] =  41
-0x7ffcda285c98 : ap[42] =  42
-0x7ffcda285c9c : ap[43] =  43
-0x7ffcda285ca0 : ap[44] =  44
-0x7ffcda285ca4 : ap[45] =  45
-0x7ffcda285ca8 : ap[46] =  46
-0x7ffcda285cac : ap[47] =  47
-0x7ffcda285cb0 : ap[48] =  48
-0x7ffcda285cb4 : ap[49] =  49
-0x7ffcda285cb8 : ap[50] =  50
-0x7ffcda285cbc : ap[51] =  51
-0x7ffcda285cc0 : ap[52] =  52
-0x7ffcda285cc4 : ap[53] =  53
-0x7ffcda285cc8 : ap[54] =  54
-0x7ffcda285ccc : ap[55] =  55
-0x7ffcda285cd0 : ap[56] =  56
-0x7ffcda285cd4 : ap[57] =  57
-0x7ffcda285cd8 : ap[58] =  58
-0x7ffcda285cdc : ap[59] =  59
-0x7ffcda285ce0 : ap[60] =  60
-0x7ffcda285ce4 : ap[61] =  61
-0x7ffcda285ce8 : ap[62] =  62
-0x7ffcda285cec : ap[63] =  63
-0x7ffcda285cf0 : ap[64] =  64
-0x7ffcda285cf4 : ap[65] =  65
-0x7ffcda285cf8 : ap[66] =  66
-0x7ffcda285cfc : ap[67] =  67
-0x7ffcda285d00 : ap[68] =  68
-0x7ffcda285d04 : ap[69] =  69
-0x7ffcda285d08 : ap[70] =  70
-0x7ffcda285d0c : ap[71] =  71
-0x7ffcda285d10 : ap[72] =  72
-0x7ffcda285d14 : ap[73] =  73
-0x7ffcda285d18 : ap[74] =  74
-0x7ffcda285d1c : ap[75] =  75
-0x7ffcda285d20 : ap[76] =  76
-0x7ffcda285d24 : ap[77] =  77
-0x7ffcda285d28 : ap[78] =  78
-0x7ffcda285d2c : ap[79] =  79
-0x7ffcda285d30 : ap[80] =  80
-0x7ffcda285d34 : ap[81] =  81
-0x7ffcda285d38 : ap[82] =  82
-0x7ffcda285d3c : ap[83] =  83
-0x7ffcda285d40 : ap[84] =  84
-0x7ffcda285d44 : ap[85] =  85
-0x7ffcda285d48 : ap[86] =  86
-0x7ffcda285d4c : ap[87] =  87
-0x7ffcda285d50 : ap[88] =  88
-0x7ffcda285d54 : ap[89] =  89
-0x7ffcda285d58 : ap[90] =  90
-0x7ffcda285d5c : ap[91] =  91
-0x7ffcda285d60 : ap[92] =  92
-0x7ffcda285d64 : ap[93] =  93
-0x7ffcda285d68 : ap[94] =  94
-0x7ffcda285d6c : ap[95] =  95
-0x7ffcda285d70 : ap[96] =  96
-0x7ffcda285d74 : ap[97] =  97
-0x7ffcda285d78 : ap[98] =  98
-0x7ffcda285d7c : ap[99] =  99
-#+end_example
-
 
