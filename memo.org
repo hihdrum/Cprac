@@ -1594,18 +1594,169 @@ evalTest(49) = C
 evalTest(24) = D
 
 *** 問題
-1. 以下のような入園料を計算するプログラムを作成せよ。(nyuennryou.c)
+**** 入園料の計算(nyuuennryou.c)
 
-   65歳以上 : 無料
-   18歳以上 : 1800
-   18歳未満 : 1200
+以下のような入園料を計算するプログラムを作成せよ。
 
-2. 以下のように性別と年齢で食べ放題料金を決めるプログラムを作成せよ。（tabehoudai.c)
+| 年齢     | 料金 |
+|----------+------|
+| 65歳以上 | 無料 |
+| 18歳以上 | 1800 |
+| 18歳未満 | 1200 |
 
-   男性, 6歳以上 : 1000
-   女性, 6歳以上 :  800
-   男性, 6歳未満 :  200
-   女性, 6歳未満 :  200
+**** 食べ放題の料金(tabehoudai.c)
+
+#+begin_comment
+解答例のコードとして汚い感じがある。問題とともに調整しよう。
+#+end_comment
+
+
+以下のような性別と年齢で食べ放題料金を決めるプログラムを作成せよ。
+
+| 性別 | 年齢    | 料金 |
+|------+---------+------|
+| 男性 | 6歳以上 | 1000 |
+| 女性 | 6歳以上 |  800 |
+| 男性 | 6歳未満 |  200 |
+| 女性 | 6歳未満 |  200 |
+
+***** 表の形をそのまま
+
+性別と年齢という2つの条件を1つとして考えた場合
+
+#+name: 表の素直な実装1
+#+begin_src C :results output :cache yes
+  #include <stdio.h>
+
+  /* seibetsu : 男性(0), 女性(1) */
+  int ryoukinn(int seibetsu, int nenrei) {
+    if(0 == seibetsu && 6 <= nenrei) {
+      return 1000;
+    } else if (1 == seibetsu && 6 <= nenrei) {
+      return 800;
+    } else if (0 == seibetsu && 6 > nenrei) {
+      return 200;
+    } else if (1 == seibetsu && 6 > nenrei) {
+      return 200;
+    }
+  }
+
+  int main(void) {
+    int seibetsu = 0,  nenrei = 6;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 1,  nenrei = 6;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 0,  nenrei = 5;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 1,  nenrei = 5;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    return 0;
+  }
+
+#+end_src
+
+#+RESULTS[2988b5a837c76c7911ddb121febf7d4d293d195b]: 表の素直な実装
+: seibetsu[0], nenrei[6] = 1000
+: seibetsu[1], nenrei[6] = 800
+: seibetsu[0], nenrei[5] = 200
+: seibetsu[1], nenrei[5] = 200
+
+性別の列を判定した後に、年齢を判定するように考えた場合
+
+#+name: 表の素直な実装2
+#+begin_src C :results output :cache yes
+  #include <stdio.h>
+
+  /* seibetsu : 男性(0), 女性(1) */
+  int ryoukinn(int seibetsu, int nenrei) {
+    if(0 == seibetsu) {
+      if(6 <= nenrei) {
+        return 1000;
+      } else {
+        return 200;
+      }
+    } else if(1 == seibetsu) {
+      if(6 <= nenrei) {
+        return 800;
+      } else {
+        return 200;
+      }
+    }
+  }
+
+  int main(void) {
+    int seibetsu = 0,  nenrei = 6;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 1,  nenrei = 6;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 0,  nenrei = 5;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 1,  nenrei = 5;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[e759efeeec2b3052343934fbfb65099c4d2156ff]:
+: seibetsu[0], nenrei[6] = 1000
+: seibetsu[1], nenrei[6] = 800
+: seibetsu[0], nenrei[5] = 200
+: seibetsu[1], nenrei[5] = 200
+
+***** 表を変形する
+
+| 年齢    | 性別 | 料金 |
+|---------+------+------|
+| 6歳以上 | 男性 | 1000 |
+| 6歳以上 | 女性 |  800 |
+| 6歳未満 | 不問 |  200 |
+
+#+begin_src C :results output :cache yes
+  #include <stdio.h>
+
+  /* seibetsu : 男性(0), 女性(1) */
+  int ryoukinn(int seibetsu, int nenrei) {
+    if(6 <= nenrei) {
+      if(0 == seibetsu) {
+        return 1000;
+      } else if (1 == seibetsu) {
+        return 800;
+      }
+    } else {
+      return 200;
+    }
+  }
+
+  int main(void) {
+    int seibetsu = 0,  nenrei = 6;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 1,  nenrei = 6;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 0,  nenrei = 5;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    seibetsu = 1,  nenrei = 5;
+    printf("seibetsu[%d], nenrei[%d] = %d\n", seibetsu, nenrei, ryoukinn(seibetsu, nenrei));
+
+    return 0;
+  }
+#+end_src
+
+#+RESULTS[5b8faa7b79a3241f000820f902fa803d58a0f8bc]:
+: seibetsu[0], nenrei[6] = 1000
+: seibetsu[1], nenrei[6] = 800
+: seibetsu[0], nenrei[5] = 200
+: seibetsu[1], nenrei[5] = 200
 
 3. 小文字(a〜z)を大文字(A-Z)に変換するプログラムを作成せよ。
 
