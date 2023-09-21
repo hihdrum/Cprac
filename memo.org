@@ -3136,3 +3136,176 @@ array[9] = 100
   }
 #+end_src
 
+
+** オブジェクト指向模擬
+
+C言語でオブジェクト指向言語の機能を模擬することを考えてみる。
+
+オブジェクト指向言語におけるクラスはデータと関連する処理がまとめられたオブジェクトとして見ることが出る。
+つまりは、各メンバへのアクセスとメソッドの呼び出しである。
+
+これをC言語で実現するにはどうすればよいだろうか。もちろん、C言語はオブジェクト指向言語ではないので、
+オブジェクト指向言語がサポートしているような機能は利用できない。つまりは、C言語の機能でどうにかすることになる。
+
+ここでは、Cの機能を利用してオブジェクト指向言語がサポートしている機能を模擬することを考えてみる。
+
+*** クラス(データと処理)
+
+メンバは、構造体をそのまま利用すれば良い。メソッドはどうだろうか、ここでは、メンバに関数ポインタを利用してみる。
+
+**** メソッド模擬の施行
+
+#+name: メソッド模擬1
+#+begin_src C :results output
+  #include <stdio.h>
+
+  struct class {           /* クラス模擬 */
+    void (*method1)();     /* メソッド模擬 */
+  };
+
+  /* メソッド */
+  void Class_method1(void) {
+    printf("method1が呼ばれました。\n");
+  }
+
+  int main(void) {
+    struct class instance = { .method1 = Class_method1 }; /* コンストラクト */
+    instance.method1();                                   /* メソッド呼び出し */
+    return 0;
+
+  }
+#+end_src
+
+#+RESULTS: メソッド模擬1
+: method1が呼ばれました。
+
+**** メソッド模擬の施行2
+
+メソッドからメンバを利用することを考え、[[メソッド模擬1]]を拡張する。
+
+#+name: メソッド模擬2
+#+begin_src C :results output
+  #include <stdio.h>
+
+  struct class {                            /* クラス模擬 */
+    int mem1;                               /* メンバ */
+    void (*method1)(struct class *this);    /* メソッド模擬 */
+  
+  };
+
+  /* メソッド */
+  void Class_method1(struct class *this) {
+    printf("method1が呼ばれました。\n");
+    printf("mem1=%d\n", this->mem1);
+  }
+
+  int main(void) {
+    struct class instance = { .mem1 = 10, .method1 = Class_method1 };
+
+    /* メソッド呼び出し */
+    instance.method1(&instance);
+    return 0;
+
+  }
+#+end_src
+
+#+RESULTS: メソッド模擬2
+: method1が呼ばれました。
+: mem1=10
+
+**** 問題 コンストラクタを用意してみよ
+
+#+name: コンストラクタ
+#+begin_src C :results output
+  #include <stdio.h>
+
+  struct class {                            /* クラス模擬 */
+    int mem1;                               /* メンバ */
+    void (*method1)(struct class *this);    /* メソッド模擬 */
+  };
+
+  /* メソッド */
+  void Class_method1(struct class *this) {
+    printf("method1が呼ばれました。\n");
+    printf("mem1=%d\n", this->mem1);
+  }
+
+  struct class Class_constructor(int mem1) {
+    struct class instance = { .mem1 = mem1, .method1 = Class_method1 };
+    return instance;
+  }
+
+  int main(void) {
+    struct class instance = Class_constructor(10);
+    instance.method1(&instance);
+    return 0;
+
+  }
+#+end_src
+
+#+RESULTS: コンストラクタ
+: method1が呼ばれました。
+: mem1=10
+
+*** 継承
+
+構造体とキャストを利用する。
+
+#+name: 継承
+#+begin_src C :results output
+  #include <stdio.h>
+
+  struct base {
+    int mem1;
+    void (*method1)(struct base *this);
+  };
+
+  void base_method1(struct base *this) {
+    printf("method1が呼ばれました。\n");
+    printf("mem1=%d\n", this->mem1);
+  }
+
+  struct base base_constructor(int mem1) {
+    struct base instance = { .mem1 = mem1, .method1 = base_method1 };
+    return instance;
+  }
+
+  /* 継承模擬 */
+  struct sub {
+    struct base base;
+    char *name;
+    void (*method1)(struct sub *this);
+  };
+
+  void sub_method1(struct sub *this) {
+    printf("sub_method1が呼ばれました。\n");
+    printf("mem1 = %d, name = %s\n", this->base.mem1, this->name);
+  }
+
+  struct sub sub_constructor(int mem1, char *name) {
+    struct base b = base_constructor(mem1);
+    struct sub sub = { .base = b, .name = name, .method1 = sub_method1 };
+    return sub;
+  }
+
+  int main(void) {
+    struct sub instance = sub_constructor(10, "ABCD");
+    instance.method1(&instance);
+
+    /* 親クラスのメソッドを呼び出す。*/
+    struct base *instanceBase = (struct base *)&instance;
+    instanceBase->method1(instanceBase);
+
+    return 0;
+
+  }
+#+end_src
+
+#+RESULTS:
+: sub_method1が呼ばれました。
+: mem1 = 10, name = ABCD
+: method1が呼ばれました。
+: mem1=10
+
+
+** 問題 構造体のインスタンス毎に関数へのポインタをすべて保持するのは無駄ではないか?
